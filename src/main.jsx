@@ -4,6 +4,7 @@ import "./index.css";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import { Login } from "./pages/auth/Login";
 import { HomeManager } from "./pages/manager/Home";
+import NotFound from "./pages/error/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
   {
     path: "/manager",
     element: <HomeManager />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 
