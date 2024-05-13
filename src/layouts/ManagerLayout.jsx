@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +13,27 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { CircleUser, Menu, Package2, Search } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useStateContext } from "@/contexts/ContextProvider";
+import { logout } from "@/apis/Auth";
 
 const ManagerLayout = () => {
+  const { token, setUser, setToken } = useStateContext();
+  const navigate = useNavigate();
+  if (!token) {
+    navigate("/");
+  }
+
+  const onLogout = async (e) => {
+    try {
+      await logout();
+      setUser(null);
+      setToken(null);
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <>
       <div className="flex min-h-screen w-full flex-col">
@@ -136,7 +155,7 @@ const ManagerLayout = () => {
                 <DropdownMenuItem>Settings</DropdownMenuItem>
                 <DropdownMenuItem>Support</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Logout</DropdownMenuItem>
+                <DropdownMenuItem onClick={onLogout}>Logout</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
