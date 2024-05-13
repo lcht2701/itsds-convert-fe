@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useStateContext } from "@/contexts/AuthProvider";
-import { login } from "../../apis/Auth";
+import AuthService from "@/services/AuthService";
 
 export function Login() {
   const [data, setData] = useState({
@@ -30,7 +30,7 @@ export function Login() {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await login(data);
+      const response = await AuthService.login(data);
       setUser(response.result.user);
       setToken(response.result.token);
       navigate("/manager");

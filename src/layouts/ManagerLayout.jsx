@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { CircleUser, Menu, Package2, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useStateContext } from "@/contexts/AuthProvider";
-import { logout } from "@/apis/Auth";
+import AuthService from "@/services/AuthService";
 
 const ManagerLayout = () => {
   const { token, setUser, setToken } = useStateContext();
@@ -25,7 +25,7 @@ const ManagerLayout = () => {
 
   const onLogout = async (e) => {
     try {
-      await logout();
+      await AuthService.logout();
       setUser(null);
       setToken(null);
       navigate("/");
