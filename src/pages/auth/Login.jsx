@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useStateContext } from "@/contexts/ContextProvider";
+import { useStateContext } from "@/contexts/AuthProvider";
 import { login } from "../../apis/Auth";
 
 export function Login() {

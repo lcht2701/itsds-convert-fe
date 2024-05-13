@@ -13,7 +13,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { CircleUser, Menu, Package2, Search } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useStateContext } from "@/contexts/ContextProvider";
+import { useStateContext } from "@/contexts/AuthProvider";
 import { logout } from "@/apis/Auth";
 
 const ManagerLayout = () => {
