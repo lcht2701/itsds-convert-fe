@@ -24,6 +24,7 @@ const router = createBrowserRouter(
         }
       />
       <Route path="/manager" element={<ManagerLayout />}>
+        <Route index element={<Navigate to="/manager/home" replace />} />
         <Route path="home" element={<HomeManager />} />
         <Route path="category" element={<CategoryList />} />
       </Route>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { File, ListFilter, MoreHorizontal, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,22 +41,39 @@ import { Spinner } from "@/components/ui/spinner";
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
+  const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const fetchData = useCallback(async () => {
+    try {
+      var response = await CategoryService.getList(currentPage);
+      setCategories(response.result.data);
+      setPagination(response.result.pagination);
+    } catch (error) {
+      console.log("Error fetching data: ", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage]);
+
+  const onChangePage = (pageNumber) => {
+    if (pageNumber !== null) setCurrentPage(pageNumber);
+  };
+
+  const onDeleteSubmit = async (category) => {
+    if (!window.confirm("Are you sure you want to delete this category?")) {
+      return;
+    }
+    await CategoryService.delete(category).then(() => {
+      setLoading(true);
+      fetchData();
+    });
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        var response = await CategoryService.getList();
-        setCategories(response.result);
-      } catch (error) {
-        console.log("Error fetching data: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [currentPage]);
 
   return (
     <>
@@ -138,7 +155,7 @@ const CategoryList = () => {
                     </TableHeader>
 
                     <TableBody>
-                      {categories.data.map((category, key) => (
+                      {categories.map((category, key) => (
                         <TableRow key={key}>
                           <TableCell className="hidden sm:table-cell">
                             {category.id}
@@ -170,7 +187,11 @@ const CategoryList = () => {
                               <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                 <DropdownMenuItem>Edit</DropdownMenuItem>
-                                <DropdownMenuItem>Delete</DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => onDeleteSubmit(category)}
+                                >
+                                  Delete
+                                </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>
@@ -178,32 +199,31 @@ const CategoryList = () => {
                       ))}
                     </TableBody>
                   </Table>
-                  {categories.links.prev ? (
-                    <Pagination className="mt-6">
-                      <PaginationContent>
-                        <PaginationItem>
-                          <PaginationPrevious href={categories.links.prev} />
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink href="#">
-                            {categories.meta.current_page}
-                          </PaginationLink>
-                        </PaginationItem>
-                        {/* <PaginationItem>
-                        <PaginationEllipsis />
-                      </PaginationItem> */}
-                        <PaginationItem>
-                          <PaginationNext href={categories.links.next} />
-                        </PaginationItem>
-                        )
-                      </PaginationContent>
-                    </Pagination>
-                  ) : (
-                    <></>
-                  )}
                 </CardContent>
               )}
-              <CardFooter></CardFooter>
+              <CardFooter className="flex justify-between items-center w-full">
+                <div className="text-xs text-muted-foreground">
+                  Showing{" "}
+                  <strong>
+                    {pagination.from}-{pagination.to}
+                  </strong>{" "}
+                  of <strong>{pagination.total}</strong> products
+                </div>
+                <div>
+                  {pagination.hasPage ?? (
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationPrevious
+                          onClick={() => onChangePage(pagination.prev)}
+                        />
+                        <PaginationNext
+                          onClick={() => onChangePage(pagination.next)}
+                        />
+                      </PaginationContent>
+                    </Pagination>
+                  )}
+                </div>
+              </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>
