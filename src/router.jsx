@@ -8,7 +8,7 @@ import { Login } from "./pages/auth/Login";
 import ManagerLayout from "./layouts/ManagerLayout";
 import { HomeManager } from "./pages/manager/Home";
 import NotFound from "./pages/error/NotFound";
-import PublicRoute from "./utils/PublicRoute";
+import PublicRoute from "./routes/PublicRoute";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
