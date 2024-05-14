@@ -30,7 +30,6 @@ const AddCategory = () => {
 
     const filteredData = Object.keys(data).reduce((acc, key) => {
       if (data[key] != null && data[key] !== "") {
-        // Chỉ thêm vào acc nếu data[key] không phải là null hoặc chuỗi rỗng
         acc[key] = data[key];
       }
       return acc;
@@ -48,7 +47,7 @@ const AddCategory = () => {
     <form onSubmit={onSubmit}>
       <main className="grid flex-1 gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 ">
         <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
-          <DetailNavbar name="Add Category" onSubmit={null} />
+          <DetailNavbar name="Add Category" />
           <Card x-chunk="dashboard-07-chunk-0">
             <CardHeader>
               <CardTitle>New Category</CardTitle>

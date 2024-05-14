@@ -31,12 +31,14 @@ import CategoryService from "@/services/CategoryService";
 import { Spinner } from "@/components/ui/spinner";
 import CustomPagination from "@/components/custom/CustomPagination";
 import { useNavigate } from "react-router-dom";
+import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
   const [paginationData, setPaginationData] = useState({});
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [activeDialogId, setActiveDialogId] = useState(null);
   const navigate = useNavigate();
 
   const fetchData = useCallback(async () => {
@@ -55,18 +57,28 @@ const CategoryList = () => {
     if (pageNumber !== null) setCurrentPage(pageNumber);
   };
 
-  const onDeleteSubmit = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this category?")) {
-      return;
-    }
-    await CategoryService.delete(id).then(() => {
-      setLoading(true);
-      fetchData();
-    });
-  };
-
   const handleOpenUpdateCategory = (id) => {
     navigate(`/manager/category/update/${id}`);
+  };
+
+  const handleConfirmDelete = async (id) => {
+    try {
+      await CategoryService.delete(id).then(() => {
+        setActiveDialogId(null);
+        setLoading(true);
+        fetchData();
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCancel = () => {
+    setActiveDialogId(null);
+  };
+
+  const handleOpenDialog = (id) => {
+    setActiveDialogId(id);
   };
 
   useEffect(() => {
@@ -157,7 +169,7 @@ const CategoryList = () => {
                     </TableHeader>
 
                     <TableBody>
-                      {categories.map((category, key) => (
+                      {categories?.map((category, key) => (
                         <TableRow key={key}>
                           <TableCell className="hidden sm:table-cell">
                             {category.id}
@@ -196,7 +208,7 @@ const CategoryList = () => {
                                   Update
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                  onClick={() => onDeleteSubmit(category.id)}
+                                  onClick={() => handleOpenDialog(category.id)}
                                 >
                                   Delete
                                 </DropdownMenuItem>
@@ -210,29 +222,6 @@ const CategoryList = () => {
                 </CardContent>
               )}
               <CardFooter>
-                {/* <div className="flex justify-between items-center w-full">
-                  <div className="text-xs text-muted-foreground">
-                    Showing{" "}
-                    <strong>
-                      {pagination.from}-{pagination.to}
-                    </strong>{" "}
-                    of <strong>{pagination.total}</strong> products
-                  </div>
-                  <div>
-                    {pagination.hasPage ?? (
-                      <Pagination>
-                        <PaginationContent>
-                          <PaginationPrevious
-                            onClick={() => onChangePage(pagination.prev)}
-                          />
-                          <PaginationNext
-                            onClick={() => onChangePage(pagination.next)}
-                          />
-                        </PaginationContent>
-                      </Pagination>
-                    )}
-                  </div>
-                </div> */}
                 <CustomPagination
                   pagination={paginationData}
                   onChangePage={onChangePage}
@@ -241,6 +230,15 @@ const CategoryList = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        <ConfirmDialog
+          isOpen={activeDialogId !== null}
+          content="Do you want to delete this category?"
+          onCancel={handleCancel}
+          onConfirm={() => {
+            handleConfirmDelete(activeDialogId);
+          }}
+        />
       </main>
     </>
   );

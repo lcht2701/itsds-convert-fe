@@ -8,6 +8,7 @@ const apiClient = axios.create({
 
 apiClient.defaults.headers.common["Content-Type"] =
   "application/json; charset=utf-8";
+apiClient.defaults.headers.common["Accept"] = "application/json";
 
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("ACCESS_TOKEN");

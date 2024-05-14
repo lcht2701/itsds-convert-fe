@@ -12,10 +12,11 @@ const DetailNavbar = ({ name }) => {
   return (
     <div className="flex items-center gap-4">
       <Button
-        onClick={navigateBack}
+        type="button"
         variant="outline"
         size="icon"
         className="h-7 w-7"
+        onClick={navigateBack}
       >
         <ChevronLeft className="h-4 w-4" />
         <span className="sr-only">Back</span>
@@ -24,7 +25,12 @@ const DetailNavbar = ({ name }) => {
         {name}
       </h1>
       <div className="ml-auto items-center gap-2 flex">
-        <Button onClick={navigateBack} variant="outline" size="sm">
+        <Button
+          type="button"
+          onClick={navigateBack}
+          variant="outline"
+          size="sm"
+        >
           Discard
         </Button>
         <Button type="submit" size="sm">

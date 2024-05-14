@@ -51,8 +51,14 @@ const UpdateCategory = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    const filteredData = Object.keys(data).reduce((acc, key) => {
+      if (data[key] != null && data[key] !== "") {
+        acc[key] = data[key];
+      }
+      return acc;
+    }, {});
     try {
-      await CategoryService.update(id, data);
+      await CategoryService.update(id, filteredData);
       navigate("/manager/category");
     } catch (error) {
       console.error("Update failed:", error);
