@@ -29,7 +29,6 @@ apiClient.interceptors.response.use(
     } catch (err) {
       console.error(err);
     }
-    throw error;
   }
 );
 

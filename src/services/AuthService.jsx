@@ -1,3 +1,4 @@
+import { toast } from "@/components/ui/use-toast";
 import apiClient from "./ApiClient";
 
 class AuthService {
@@ -7,18 +8,23 @@ class AuthService {
       if (csrfResponse.status !== 204) {
         throw new Error("Failed to retrieve CSRF token");
       }
-
-      // Attempt to login
       const loginResponse = await apiClient.post("/login", {
         email: data.email,
         password: data.password,
       });
-
       console.log(loginResponse);
+      toast({
+        title: "Successful",
+        description: `${loginResponse.data.message}`,
+      });
       return loginResponse.data;
     } catch (error) {
       console.error("Error during the login process:", error);
-      throw error; // Rethrowing the error to handle it or log it externally if needed
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: `${error}`,
+      });
     }
   }
 
@@ -26,9 +32,17 @@ class AuthService {
     try {
       const response = await apiClient.post("/logout");
       console.log(response);
+      toast({
+        title: "Successful",
+        description: `${response.data.message}`,
+      });
     } catch (error) {
       console.error("Error during the login process:", error);
-      throw error; // Rethrowing the error to handle it or log it externally if needed
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: `${error}`,
+      });
     }
   }
 }

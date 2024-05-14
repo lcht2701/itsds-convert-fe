@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NavLink, Navigate, Outlet, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { CircleUser, Menu, Package2, Search } from "lucide-react";
 import { useStateContext } from "@/contexts/AuthProvider";
 import AuthService from "@/services/AuthService";
+import { Toaster } from "@/components/ui/toaster";
 
 const ManagerLayout = () => {
   const { token, setUser, setToken } = useStateContext();
@@ -22,10 +23,6 @@ const ManagerLayout = () => {
     isActive
       ? "text-foreground transition-colors hover:text-foreground"
       : "text-muted-foreground transition-colors hover:text-foreground";
-
-  if (!token) {
-    navigate("/login");
-  }
 
   const onLogout = async (e) => {
     try {
@@ -37,6 +34,12 @@ const ManagerLayout = () => {
       console.error("Logout failed:", error);
     }
   };
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, []);
 
   return (
     <>
@@ -122,6 +125,7 @@ const ManagerLayout = () => {
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
           <Outlet />
         </main>
+        <Toaster />
       </div>
     </>
   );
