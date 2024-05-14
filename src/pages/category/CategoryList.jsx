@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { File, ListFilter, MoreHorizontal, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,30 +26,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CategoryService from "@/services/CategoryService";
 import { Spinner } from "@/components/ui/spinner";
+import CustomPagination from "@/components/custom/CustomPagination";
+import { useNavigate } from "react-router-dom";
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
-  const [pagination, setPagination] = useState({});
+  const [paginationData, setPaginationData] = useState({});
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
 
   const fetchData = useCallback(async () => {
     try {
       var response = await CategoryService.getList(currentPage);
       setCategories(response.result.data);
-      setPagination(response.result.pagination);
+      setPaginationData(response.result.pagination);
     } catch (error) {
       console.log("Error fetching data: ", error);
     } finally {
@@ -61,19 +55,23 @@ const CategoryList = () => {
     if (pageNumber !== null) setCurrentPage(pageNumber);
   };
 
-  const onDeleteSubmit = async (category) => {
+  const onDeleteSubmit = async (id) => {
     if (!window.confirm("Are you sure you want to delete this category?")) {
       return;
     }
-    await CategoryService.delete(category).then(() => {
+    await CategoryService.delete(id).then(() => {
       setLoading(true);
       fetchData();
     });
   };
 
+  const handleOpenUpdateCategory = (id) => {
+    navigate(`/manager/category/update/${id}`);
+  };
+
   useEffect(() => {
     fetchData();
-  }, [currentPage]);
+  }, [currentPage, fetchData]);
 
   return (
     <>
@@ -114,7 +112,11 @@ const CategoryList = () => {
                   Export
                 </span>
               </Button>
-              <Button size="sm" className="h-8 gap-1">
+              <Button
+                onClick={() => navigate("add")}
+                size="sm"
+                className="h-8 gap-1"
+              >
                 <PlusCircle className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                   Add Product
@@ -164,7 +166,7 @@ const CategoryList = () => {
                             {category.name}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {category.description}
+                            {category.description || "-"}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
                             {category.created_at}
@@ -186,9 +188,15 @@ const CategoryList = () => {
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem>Edit</DropdownMenuItem>
                                 <DropdownMenuItem
-                                  onClick={() => onDeleteSubmit(category)}
+                                  onClick={() =>
+                                    handleOpenUpdateCategory(category.id)
+                                  }
+                                >
+                                  Update
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => onDeleteSubmit(category.id)}
                                 >
                                   Delete
                                 </DropdownMenuItem>
@@ -201,28 +209,34 @@ const CategoryList = () => {
                   </Table>
                 </CardContent>
               )}
-              <CardFooter className="flex justify-between items-center w-full">
-                <div className="text-xs text-muted-foreground">
-                  Showing{" "}
-                  <strong>
-                    {pagination.from}-{pagination.to}
-                  </strong>{" "}
-                  of <strong>{pagination.total}</strong> products
-                </div>
-                <div>
-                  {pagination.hasPage ?? (
-                    <Pagination>
-                      <PaginationContent>
-                        <PaginationPrevious
-                          onClick={() => onChangePage(pagination.prev)}
-                        />
-                        <PaginationNext
-                          onClick={() => onChangePage(pagination.next)}
-                        />
-                      </PaginationContent>
-                    </Pagination>
-                  )}
-                </div>
+              <CardFooter>
+                {/* <div className="flex justify-between items-center w-full">
+                  <div className="text-xs text-muted-foreground">
+                    Showing{" "}
+                    <strong>
+                      {pagination.from}-{pagination.to}
+                    </strong>{" "}
+                    of <strong>{pagination.total}</strong> products
+                  </div>
+                  <div>
+                    {pagination.hasPage ?? (
+                      <Pagination>
+                        <PaginationContent>
+                          <PaginationPrevious
+                            onClick={() => onChangePage(pagination.prev)}
+                          />
+                          <PaginationNext
+                            onClick={() => onChangePage(pagination.next)}
+                          />
+                        </PaginationContent>
+                      </Pagination>
+                    )}
+                  </div>
+                </div> */}
+                <CustomPagination
+                  pagination={paginationData}
+                  onChangePage={onChangePage}
+                />
               </CardFooter>
             </Card>
           </TabsContent>

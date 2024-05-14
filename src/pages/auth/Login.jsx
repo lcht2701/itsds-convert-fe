@@ -24,7 +24,7 @@ export function Login() {
   const navigate = useNavigate();
 
   const onChange = (e) => {
-    setData({ ...data, [e.target.id]: e.target.value });
+    setData({ ...data, [e.target.name]: e.target.value });
   };
 
   const onSubmit = async (e) => {
@@ -55,6 +55,7 @@ export function Login() {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="m@example.com"
                   required
@@ -65,6 +66,7 @@ export function Login() {
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
                   required
                   onChange={onChange}
