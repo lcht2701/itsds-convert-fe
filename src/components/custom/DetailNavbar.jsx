@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { ChevronLeft } from "lucide-react";

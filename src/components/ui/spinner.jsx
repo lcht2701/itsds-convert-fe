@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { cn } from "@/lib/utils"; // Adjust the import path based on your project structure
 import { Loader2 } from "lucide-react";
 
