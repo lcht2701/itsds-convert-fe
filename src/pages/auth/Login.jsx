@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useStateContext } from "@/contexts/AuthProvider";
-import AuthService from "@/services/AuthService";
+import AuthService from "@/servers/AuthService";
 
 export function Login() {
   const [data, setData] = useState({

@@ -13,7 +13,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { CircleUser, Menu, Package2, Search } from "lucide-react";
 import { useStateContext } from "@/contexts/AuthProvider";
-import AuthService from "@/services/AuthService";
+import AuthService from "@/servers/AuthService";
 import { Toaster } from "@/components/ui/toaster";
 
 const ManagerLayout = () => {
@@ -59,6 +59,9 @@ const ManagerLayout = () => {
             <NavLink to="/manager/category" className={getNavLinkClass}>
               Categories
             </NavLink>
+            <NavLink to="/manager/service" className={getNavLinkClass}>
+              Services
+            </NavLink>
           </nav>
           <Sheet>
             <SheetTrigger asChild>
@@ -85,6 +88,9 @@ const ManagerLayout = () => {
                 </NavLink>
                 <NavLink to="/manager/category" className={getNavLinkClass}>
                   Categories
+                </NavLink>
+                <NavLink to="/manager/service" className={getNavLinkClass}>
+                  Services
                 </NavLink>
               </nav>
             </SheetContent>

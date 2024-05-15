@@ -27,14 +27,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import CategoryService from "@/servers/CategoryService";
+import ServiceService from "@/servers/ServiceService";
 import { Spinner } from "@/components/ui/spinner";
 import CustomPagination from "@/components/custom/CustomPagination";
 import { useNavigate } from "react-router-dom";
 import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
 
-const CategoryList = () => {
-  const [categories, setCategories] = useState([]);
+const ServiceList = () => {
+  const [services, setServices] = useState([]);
   const [paginationData, setPaginationData] = useState({});
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,8 +43,8 @@ const CategoryList = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      var response = await CategoryService.getPaginatedList(currentPage);
-      setCategories(response.result.data);
+      var response = await ServiceService.getPaginatedList(currentPage);
+      setServices(response.result.data);
       setPaginationData(response.result.pagination);
     } catch (error) {
       console.log("Error fetching data: ", error);
@@ -57,13 +57,13 @@ const CategoryList = () => {
     if (pageNumber !== null) setCurrentPage(pageNumber);
   };
 
-  const handleOpenUpdateCategory = (id) => {
-    navigate(`/manager/category/update/${id}`);
+  const handleOpenUpdateService = (id) => {
+    navigate(`/manager/service/update/${id}`);
   };
 
   const handleConfirmDelete = async (id) => {
     try {
-      await CategoryService.delete(id).then(() => {
+      await ServiceService.delete(id).then(() => {
         setActiveDialogId(null);
         setLoading(true);
         fetchData();
@@ -139,9 +139,9 @@ const CategoryList = () => {
           <TabsContent value="all">
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>
-                <CardTitle>Categories</CardTitle>
+                <CardTitle>Services</CardTitle>
                 <CardDescription>
-                  Manage categories and their details
+                  Manage services and their details
                 </CardDescription>
               </CardHeader>
               {loading ? (
@@ -156,6 +156,7 @@ const CategoryList = () => {
                         </TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Description</TableHead>
+                        <TableHead>Category</TableHead>
                         <TableHead className="hidden md:table-cell">
                           Created at
                         </TableHead>
@@ -169,22 +170,25 @@ const CategoryList = () => {
                     </TableHeader>
 
                     <TableBody>
-                      {categories?.map((category, key) => (
+                      {services?.map((service, key) => (
                         <TableRow key={key}>
                           <TableCell className="hidden sm:table-cell">
-                            {category.id}
+                            {service.id}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {category.name}
+                            {service.name}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {category.description || "-"}
+                            {service.description || "-"}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {service.category.name || "-"}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            {category.created_at}
+                            {service.created_at}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            {category.updated_at}
+                            {service.updated_at}
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
@@ -202,13 +206,13 @@ const CategoryList = () => {
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                 <DropdownMenuItem
                                   onClick={() =>
-                                    handleOpenUpdateCategory(category.id)
+                                    handleOpenUpdateService(service.id)
                                   }
                                 >
                                   Update
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                  onClick={() => handleOpenDialog(category.id)}
+                                  onClick={() => handleOpenDialog(service.id)}
                                 >
                                   Delete
                                 </DropdownMenuItem>
@@ -233,7 +237,7 @@ const CategoryList = () => {
 
         <ConfirmDialog
           isOpen={activeDialogId !== null}
-          content="Do you want to delete this category?"
+          content="Do you want to delete this service?"
           onCancel={handleCancel}
           onConfirm={() => {
             handleConfirmDelete(activeDialogId);
@@ -244,4 +248,4 @@ const CategoryList = () => {
   );
 };
 
-export default CategoryList;
+export default ServiceList;
