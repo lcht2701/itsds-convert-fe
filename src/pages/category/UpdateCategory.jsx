@@ -13,30 +13,37 @@ import { useEffect, useState } from "react";
 import CategoryService from "@/services/CategoryService";
 import { useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
+import { useForm } from "react-hook-form";
+import { handleNullInputField } from "@/utils/HandleNullInputField";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import ErrorMessage from "@/components/custom/ErrorMessage";
 
 const UpdateCategory = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState({
-    name: "",
-    description: "",
+
+  const schema = yup.object().shape({
+    name: yup.string().required("Name is required"),
   });
 
-  const onChange = (e) => {
-    setData({ ...data, [e.target.id]: e.target.value });
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const fetchData = async () => {
     setLoading(true);
     try {
       var response = await CategoryService.getDetail(id);
       var result = response.result;
-      setData((prevData) => ({
-        ...prevData,
-        name: result.name,
-        description: result.description,
-      }));
+      setValue("name", result.name);
+      setValue("description", result.description);
     } catch (error) {
       console.log("Error fetching data: ", error);
     } finally {
@@ -48,16 +55,11 @@ const UpdateCategory = () => {
     fetchData();
   }, []);
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    const filteredData = Object.keys(data).reduce((acc, key) => {
-      if (data[key] != null && data[key] !== "") {
-        acc[key] = data[key];
-      }
-      return acc;
-    }, {});
+  const onSubmit = async (data) => {
+    data = handleNullInputField(data);
+    console.log(data);
     try {
-      await CategoryService.update(id, filteredData);
+      await CategoryService.update(id, data);
       navigate("/manager/category");
     } catch (error) {
       console.error("Update failed:", error);
@@ -67,15 +69,15 @@ const UpdateCategory = () => {
   if (loading) return <Spinner size="medium" />;
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <main className="grid flex-1 gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 ">
         <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
           <DetailNavbar name="Update Category" />
           <Card x-chunk="dashboard-07-chunk-0">
             <CardHeader>
-              <CardTitle>New Category</CardTitle>
+              <CardTitle>Update Category</CardTitle>
               <CardDescription>
-                Input name and description of new category
+                Update name and description of the category
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -87,9 +89,9 @@ const UpdateCategory = () => {
                     type="text"
                     className="w-full"
                     placeholder="Enter name"
-                    value={data.name}
-                    onChange={onChange}
+                    {...register("name")}
                   />
+                  <ErrorMessage errors={errors} name="name" />
                 </div>
                 <div className="grid gap-3">
                   <Label htmlFor="description">Description</Label>
@@ -97,8 +99,7 @@ const UpdateCategory = () => {
                     id="description"
                     placeholder="Enter description"
                     className="min-h-32"
-                    value={data.description}
-                    onChange={onChange}
+                    {...register("description")}
                   />
                 </div>
               </div>

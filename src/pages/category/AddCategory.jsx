@@ -9,34 +9,34 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import DetailNavbar from "@/components/custom/DetailNavbar";
-import { useState } from "react";
 import CategoryService from "@/services/CategoryService";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { handleNullInputField } from "@/utils/HandleNullInputField";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import ErrorMessage from "@/components/custom/ErrorMessage";
 
 const AddCategory = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState({
-    name: "",
-    description: null,
+  const schema = yup.object().shape({
+    name: yup.string().required("Name is required"),
+    description: yup.string().optional(),
   });
 
-  const onChange = (e) => {
-    const value = e.target.value || null;
-    setData({ ...data, [e.target.id]: value });
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-
-    const filteredData = Object.keys(data).reduce((acc, key) => {
-      if (data[key] != null && data[key] !== "") {
-        acc[key] = data[key];
-      }
-      return acc;
-    }, {});
-
+  const onSubmit = async (data) => {
+    data = handleNullInputField(data);
+    console.log(data);
     try {
-      await CategoryService.add(filteredData);
+      await CategoryService.add(data);
       navigate("/manager/category");
     } catch (error) {
       console.error("Add failed:", error);
@@ -44,7 +44,7 @@ const AddCategory = () => {
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <main className="grid flex-1 gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 ">
         <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
           <DetailNavbar name="Add Category" />
@@ -52,7 +52,7 @@ const AddCategory = () => {
             <CardHeader>
               <CardTitle>New Category</CardTitle>
               <CardDescription>
-                Input name and description of new category
+                Input name and description of the category
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -65,17 +65,17 @@ const AddCategory = () => {
                     type="text"
                     className="w-full"
                     placeholder="Enter name"
-                    onChange={onChange}
+                    {...register("name")}
                   />
+                  <ErrorMessage errors={errors} name="name" />
                 </div>
                 <div className="grid gap-3">
                   <Label htmlFor="description">Description</Label>
                   <Textarea
                     id="description"
-                    name="description"
                     placeholder="Enter description"
                     className="min-h-32"
-                    onChange={onChange}
+                    {...register("description")}
                   />
                 </div>
               </div>
