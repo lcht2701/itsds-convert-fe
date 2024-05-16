@@ -1,3 +1,4 @@
+import React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,16 +26,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import ServiceService from "@/servers/ServiceService";
 import { Spinner } from "@/components/ui/spinner";
 import CustomPagination from "@/components/custom/CustomPagination";
 import { useNavigate } from "react-router-dom";
 import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
+import TicketSolutionService from "@/servers/TicketSolutionService";
 import ListNavBar from "@/components/custom/ListNav";
 
-const ServiceList = () => {
-  const [services, setServices] = useState([]);
-  const [paginationData, setPaginationData] = useState({});
+const TicketSolutionList = () => {
+  const [ticketSolutions, setTicketSolutions] = useState([]);
+  const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeDialogId, setActiveDialogId] = useState(null);
@@ -42,9 +43,9 @@ const ServiceList = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      var response = await ServiceService.getPaginatedList(currentPage);
-      setServices(response.result.data);
-      setPaginationData(response.result.pagination);
+      var response = await TicketSolutionService.getPaginatedList(currentPage);
+      setTicketSolutions(response.result.data);
+      setPagination(response.result.pagination);
     } catch (error) {
       console.log("Error fetching data: ", error);
     } finally {
@@ -56,13 +57,17 @@ const ServiceList = () => {
     if (pageNumber !== null) setCurrentPage(pageNumber);
   };
 
-  const handleOpenUpdateService = (id) => {
-    navigate(`/manager/service/update/${id}`);
+  const handleOpenDetailPage = (id) => {
+    navigate(`detail/${id}`);
+  };
+
+  const handleOpenUpdatePage = (id) => {
+    navigate(`update/${id}`);
   };
 
   const handleConfirmDelete = async (id) => {
     try {
-      await ServiceService.delete(id).then(() => {
+      await TicketSolutionService.delete(id).then(() => {
         setActiveDialogId(null);
         setLoading(true);
         fetchData();
@@ -92,9 +97,9 @@ const ServiceList = () => {
           <TabsContent value="all">
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>
-                <CardTitle>Services</CardTitle>
+                <CardTitle>Ticket Solutions</CardTitle>
                 <CardDescription>
-                  Manage services and their details
+                  Manage ticket solutions and their details
                 </CardDescription>
               </CardHeader>
               {loading ? (
@@ -107,9 +112,20 @@ const ServiceList = () => {
                         <TableHead className="hidden w-[100px] sm:table-cell">
                           <span className="sr-only">Id</span>
                         </TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead>Category</TableHead>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Service</TableHead>
+                        <TableHead className="hidden md:table-cell">
+                          Owner
+                        </TableHead>
+                        <TableHead className="hidden md:table-cell">
+                          Reviewed Date
+                        </TableHead>
+                        <TableHead className="hidden md:table-cell">
+                          Keyword
+                        </TableHead>
+                        <TableHead className="hidden md:table-cell">
+                          Created By
+                        </TableHead>
                         <TableHead className="hidden md:table-cell">
                           Created at
                         </TableHead>
@@ -123,25 +139,38 @@ const ServiceList = () => {
                     </TableHeader>
 
                     <TableBody>
-                      {services?.map((service, key) => (
-                        <TableRow key={key}>
+                      {ticketSolutions?.map((solution, key) => (
+                        <TableRow
+                          key={key}
+                          onClick={() => handleOpenDetailPage(solution.id)}
+                          className="cursor-pointer"
+                        >
                           <TableCell className="hidden sm:table-cell">
-                            {service.id}
+                            {solution.id}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {service.name}
+                            {solution.title}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {service.description || "-"}
-                          </TableCell>
-                          <TableCell className="font-medium">
-                            {service.category?.name || "-"}
+                            {solution.service?.name || "-"}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            {service.created_at}
+                            {solution.owner?.name || "-"}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            {service.updated_at}
+                            {solution.review_date || "-"}
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {solution.keyword || "-"}
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {solution.createdBy?.name || "-"}
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {solution.created_at}
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {solution.updated_at}
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
@@ -159,13 +188,13 @@ const ServiceList = () => {
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                 <DropdownMenuItem
                                   onClick={() =>
-                                    handleOpenUpdateService(service.id)
+                                    handleOpenUpdatePage(solution.id)
                                   }
                                 >
                                   Update
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                  onClick={() => handleOpenDialog(service.id)}
+                                  onClick={() => handleOpenDialog(solution.id)}
                                 >
                                   Delete
                                 </DropdownMenuItem>
@@ -180,7 +209,7 @@ const ServiceList = () => {
               )}
               <CardFooter>
                 <CustomPagination
-                  pagination={paginationData}
+                  pagination={pagination}
                   onChangePage={onChangePage}
                 />
               </CardFooter>
@@ -190,7 +219,7 @@ const ServiceList = () => {
 
         <ConfirmDialog
           isOpen={activeDialogId !== null}
-          content="Do you want to delete this service?"
+          content="Do you want to delete this solution?"
           onCancel={handleCancel}
           onConfirm={() => {
             handleConfirmDelete(activeDialogId);
@@ -201,4 +230,4 @@ const ServiceList = () => {
   );
 };
 
-export default ServiceList;
+export default TicketSolutionList;

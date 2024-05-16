@@ -16,6 +16,10 @@ import ServiceList from "./pages/service/ServiceList";
 import AddService from "./pages/service/AddService";
 import UpdateService from "./pages/service/UpdateService";
 import Profile from "./pages/setting/Profile";
+import TicketSolutionList from "./pages/ticketSolution/TicketSolutionList";
+import AddTicketSolution from "./pages/ticketSolution/AddTicketSolution";
+import UpdateTicketSolution from "./pages/ticketSolution/UpdateTicketSolution";
+import TicketSolutionDetail from "./pages/ticketSolution/TicketSolutionDetail";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,6 +36,16 @@ const router = createBrowserRouter(
       <Route path="/manager" element={<ManagerLayout />}>
         <Route index element={<Navigate to="/manager/home" replace />} />
         <Route path="home" element={<HomeManager />} />
+        <Route path="ticket-solution" element={<TicketSolutionList />} />
+        <Route path="ticket-solution/add" element={<AddTicketSolution />} />
+        <Route
+          path="ticket-solution/update/:id"
+          element={<UpdateTicketSolution />}
+        />
+        <Route
+          path="ticket-solution/detail/:id"
+          element={<TicketSolutionDetail />}
+        />
         <Route path="category" element={<CategoryList />} />
         <Route path="category/add" element={<AddCategory />} />
         <Route path="category/update/:id" element={<UpdateCategory />} />

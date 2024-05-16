@@ -2,6 +2,16 @@ import { toast } from "@/components/ui/use-toast";
 import apiClient from "./ApiClient";
 
 class UserService {
+  async getOwnerList() {
+    try {
+      const response = await apiClient.get(`/api/user/owner/select`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error during the get owner list process:", error);
+    }
+  }
+
   async getProfile() {
     try {
       const response = await apiClient.get(`/api/user/profile`);

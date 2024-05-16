@@ -85,8 +85,8 @@ const UpdateService = () => {
       }
     };
 
-    fetchData();
     fetchCategoryList();
+    fetchData();
   }, []);
 
   if (loading) return <Spinner size="medium" />;
