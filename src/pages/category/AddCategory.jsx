@@ -21,7 +21,7 @@ const AddCategory = () => {
   const navigate = useNavigate();
   const schema = yup.object().shape({
     name: yup.string().required("Name is required"),
-    description: yup.string().optional(),
+    description: yup.string().nullable(),
   });
 
   const {
@@ -78,6 +78,7 @@ const AddCategory = () => {
                     {...register("description")}
                   />
                 </div>
+                <ErrorMessage errors={errors} name="description" />
               </div>
             </CardContent>
           </Card>

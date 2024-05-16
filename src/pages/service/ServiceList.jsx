@@ -182,7 +182,7 @@ const ServiceList = () => {
                             {service.description || "-"}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {service.category.name || "-"}
+                            {service.category?.name || "-"}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
                             {service.created_at}

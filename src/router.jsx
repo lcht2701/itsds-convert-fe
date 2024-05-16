@@ -15,6 +15,7 @@ import UpdateCategory from "./pages/category/UpdateCategory";
 import ServiceList from "./pages/service/ServiceList";
 import AddService from "./pages/service/AddService";
 import UpdateService from "./pages/service/UpdateService";
+import Profile from "./pages/setting/Profile";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,12 +32,13 @@ const router = createBrowserRouter(
       <Route path="/manager" element={<ManagerLayout />}>
         <Route index element={<Navigate to="/manager/home" replace />} />
         <Route path="home" element={<HomeManager />} />
-        <Route path="category" element={<CategoryList />}></Route>
+        <Route path="category" element={<CategoryList />} />
         <Route path="category/add" element={<AddCategory />} />
         <Route path="category/update/:id" element={<UpdateCategory />} />
-        <Route path="service" element={<ServiceList />}></Route>
+        <Route path="service" element={<ServiceList />} />
         <Route path="service/add" element={<AddService />} />
         <Route path="service/update/:id" element={<UpdateService />} />
+        <Route path="setting/profile" element={<Profile />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </>

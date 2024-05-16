@@ -11,8 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import DetailNavbar from "@/components/custom/DetailNavbar";
 import ServiceService from "@/servers/ServiceService";
 import { useNavigate } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
 import { handleNullInputField } from "@/utils/HandleNullInputField";
+import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorMessage from "@/components/custom/ErrorMessage";
@@ -31,8 +31,8 @@ const AddService = () => {
   const [categoryList, setCategoryList] = useState([]);
   const schema = yup.object().shape({
     name: yup.string().required("Name is required"),
-    description: yup.string().optional(),
-    category_id: yup.number().optional(),
+    description: yup.string().nullable(),
+    category_id: yup.number().nullable(),
   });
 
   const {
@@ -131,7 +131,7 @@ const AddService = () => {
                       </Select>
                     )}
                   />
-                  <ErrorMessage errors={errors} name="name" />
+                  <ErrorMessage errors={errors} name="category_id" />
                 </div>
               </div>
             </CardContent>

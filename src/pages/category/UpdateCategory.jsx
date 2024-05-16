@@ -26,7 +26,7 @@ const UpdateCategory = () => {
 
   const schema = yup.object().shape({
     name: yup.string().required("Name is required"),
-    description: yup.string().optional(),
+    description: yup.string().nullable(),
   });
 
   const {
@@ -103,6 +103,7 @@ const UpdateCategory = () => {
                     {...register("description")}
                   />
                 </div>
+                <ErrorMessage errors={errors} name="description" />
               </div>
             </CardContent>
           </Card>

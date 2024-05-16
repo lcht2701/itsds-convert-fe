@@ -35,8 +35,8 @@ const UpdateService = () => {
 
   const schema = yup.object().shape({
     name: yup.string().required("Name is required"),
-    description: yup.string().optional(),
-    category_id: yup.number().optional(),
+    description: yup.string().nullable(),
+    category_id: yup.number().nullable(),
   });
 
   const {
@@ -68,7 +68,7 @@ const UpdateService = () => {
         var result = response.result;
         setValue("name", result.name);
         setValue("description", result.description);
-        setValue("category_id", result.category.id);
+        setValue("category_id", result.category?.id);
       } catch (error) {
         console.log("Error fetching data: ", error);
       } finally {
@@ -124,7 +124,7 @@ const UpdateService = () => {
                     className="min-h-32"
                     {...register("description")}
                   />
-                  <ErrorMessage errors={errors} name="name" />
+                  <ErrorMessage errors={errors} name="description" />
                 </div>
                 <div className="grid gap-3">
                   <Controller
@@ -134,7 +134,7 @@ const UpdateService = () => {
                     render={({ field }) => (
                       <Select
                         onValueChange={field.onChange}
-                        value={field.value.toString()}
+                        value={field.value?.toString()}
                       >
                         <Label id="category_id" htmlFor="category_id">
                           Category
