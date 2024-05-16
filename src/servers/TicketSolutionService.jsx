@@ -41,11 +41,6 @@ class TicketSolutionService {
       return response.data;
     } catch (error) {
       console.error("Error during the get detail process:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: `${error}`,
-      });
     }
   }
 

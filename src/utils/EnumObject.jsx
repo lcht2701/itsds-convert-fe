@@ -5,3 +5,8 @@ export const UserRoleEnum = {
   3: "Manager",
   4: "Admin",
 };
+
+export const ReactionEnum = {
+  0: "Dislike",
+  1: "Like",
+};

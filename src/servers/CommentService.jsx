@@ -1,21 +1,12 @@
 import { toast } from "@/components/ui/use-toast";
 import apiClient from "./ApiClient";
 
-class CategoryService {
-  async getSelectList() {
+class CommentService {
+  async get(solutionId) {
     try {
-      const response = await apiClient.get(`/api/category/select`);
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error("Error during the get select list process:", error);
-    }
-  }
-
-  async getPaginatedList(page = 1) {
-    try {
-      const params = { page: page };
-      const response = await apiClient.get(`/api/category`, { params: params });
+      const response = await apiClient.get(
+        `/api/ticket-solution/${solutionId}/comment`
+      );
       console.log(response.data);
       return response.data;
     } catch (error) {
@@ -23,9 +14,12 @@ class CategoryService {
     }
   }
 
-  async add(data) {
+  async add(solutionId, data) {
     try {
-      const response = await apiClient.post(`/api/category`, data);
+      const response = await apiClient.post(
+        `/api/ticket-solution/${solutionId}/comment`,
+        data
+      );
       console.log(response.data);
       toast({
         title: "Successful",
@@ -42,9 +36,11 @@ class CategoryService {
     }
   }
 
-  async getDetail(id) {
+  async getDetail(solutionId, commentId) {
     try {
-      const response = await apiClient.get(`/api/category/${id}`);
+      const response = await apiClient.get(
+        `/api/ticket-solution/${solutionId}/comment/${commentId}`
+      );
       console.log(response.data);
       return response.data;
     } catch (error) {
@@ -52,9 +48,12 @@ class CategoryService {
     }
   }
 
-  async update(id, data) {
+  async update(solutionId, commentId, data) {
     try {
-      const response = await apiClient.put(`/api/category/${id}`, data);
+      const response = await apiClient.put(
+        `/api/ticket-solution/${solutionId}/comment/${commentId}`,
+        data
+      );
       console.log(response.data);
       toast({
         title: "Successful",
@@ -71,9 +70,11 @@ class CategoryService {
     }
   }
 
-  async delete(id) {
+  async delete(solutionId, commentId) {
     try {
-      const response = await apiClient.delete(`/api/category/${id}`);
+      const response = await apiClient.delete(
+        `/api/ticket-solution/${solutionId}/comment/${commentId}`
+      );
       console.log(response.data);
       toast({
         title: "Successful",
@@ -91,4 +92,4 @@ class CategoryService {
   }
 }
 
-export default new CategoryService();
+export default new CommentService();
