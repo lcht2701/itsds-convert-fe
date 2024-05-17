@@ -28,6 +28,8 @@ import { HomeCustomer } from "./pages/home/HomeCustomer";
 import CustomerLayout from "./layouts/CustomerLayout";
 import CompanyAdminLayout from "./layouts/CompanyAdminLayout";
 import { HomeCompanyAdmin } from "./pages/home/HomeCompanyAdmin";
+import TechnicianLayout from "./layouts/TechnicianLayout";
+import { HomeTechnician } from "./pages/home/HomeTechnician";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -57,6 +59,7 @@ const router = createBrowserRouter(
           <Route path="setting/profile" element={<Profile />} />
         </Route>
       </Route>
+
       {/* Routes for CompanyAdmin */}
       <Route
         element={<PrivateRoute allowedRoles={[UserRoleToEnum.COMPANYADMIN]} />}
@@ -75,20 +78,42 @@ const router = createBrowserRouter(
           <Route path="setting/profile" element={<Profile />} />
         </Route>
       </Route>
+
+      {/* Routes for Technician */}
+      <Route
+        element={<PrivateRoute allowedRoles={[UserRoleToEnum.TECHNICIAN]} />}
+      >
+        <Route path="/technician" element={<TechnicianLayout />}>
+          <Route index element={<Navigate to="/technician/home" replace />} />
+          <Route path="home" element={<HomeTechnician />} />
+          <Route path="ticket-solution" element={<TicketSolutionList />} />
+          <Route
+            path="ticket-solution/detail/:id"
+            element={<TicketSolutionDetail />}
+          />
+          <Route path="ticket-solution/add" element={<AddTicketSolution />} />
+          <Route
+            path="ticket-solution/update/:id"
+            element={<UpdateTicketSolution />}
+          />
+          <Route path="setting/profile" element={<Profile />} />
+        </Route>
+      </Route>
+
       {/* Routes for Manager */}
       <Route element={<PrivateRoute allowedRoles={[UserRoleToEnum.MANAGER]} />}>
         <Route path="/manager" element={<ManagerLayout />}>
           <Route index element={<Navigate to="/manager/home" replace />} />
           <Route path="home" element={<HomeManager />} />
           <Route path="ticket-solution" element={<TicketSolutionList />} />
+          <Route
+            path="ticket-solution/detail/:id"
+            element={<TicketSolutionDetail />}
+          />
           <Route path="ticket-solution/add" element={<AddTicketSolution />} />
           <Route
             path="ticket-solution/update/:id"
             element={<UpdateTicketSolution />}
-          />
-          <Route
-            path="ticket-solution/detail/:id"
-            element={<TicketSolutionDetail />}
           />
           <Route path="category" element={<CategoryList />} />
           <Route path="category/add" element={<AddCategory />} />
