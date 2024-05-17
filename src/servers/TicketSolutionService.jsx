@@ -84,7 +84,7 @@ class TicketSolutionService {
 
   async approve(id) {
     try {
-      const response = await apiClient.put(
+      const response = await apiClient.patch(
         `/api/ticket-solution/${id}/approve`
       );
       console.log(response.data);
@@ -105,7 +105,9 @@ class TicketSolutionService {
 
   async reject(id) {
     try {
-      const response = await apiClient.put(`/api/ticket-solution/${id}/reject`);
+      const response = await apiClient.patch(
+        `/api/ticket-solution/${id}/reject`
+      );
       console.log(response.data);
       toast({
         title: "Successful",

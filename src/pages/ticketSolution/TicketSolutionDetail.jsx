@@ -1,16 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  ChevronsUpDown,
-  CornerDownLeft,
-  Lightbulb,
-  Paperclip,
-  Pencil,
-  ThumbsDown,
-  ThumbsUp,
-  Trash,
-} from "lucide-react";
+import { Lightbulb, ThumbsDown, ThumbsUp } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,12 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import React, { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -36,17 +20,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import ReactionService from "@/servers/ReactionService";
 import CommentService from "@/servers/CommentService";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ErrorMessage from "@/components/custom/ErrorMessage";
 import { handleNullInputField } from "@/utils/HandleNullInputField";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-// import CommentList from "./ui/CommentList";
+import CommentList from "./ui/CommentList";
 
 const TicketSolutionDetail = () => {
   const { id } = useParams();
@@ -167,6 +145,26 @@ const TicketSolutionDetail = () => {
     }
   };
 
+  const handleApprove = async () => {
+    try {
+      await TicketSolutionService.approve(id).then(() => {
+        fetchData();
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      await TicketSolutionService.reject(id).then(() => {
+        fetchData();
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchReaction();
     fetchCommentList();
@@ -192,10 +190,20 @@ const TicketSolutionDetail = () => {
           Ticket Solution Detail
         </h1>
         <div className="ml-auto items-center gap-2 flex">
-          <Button type="button" variant="outline" size="sm">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => handleApprove()}
+          >
             Approve
           </Button>
-          <Button type="button" variant="outline" size="sm">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => handleReject()}
+          >
             Reject
           </Button>
           <Button
@@ -279,91 +287,16 @@ const TicketSolutionDetail = () => {
               </div>
             </div>
             {/* Comment */}
-            <Collapsible
-              open={isOpenComment}
-              onOpenChange={setOpenComment}
-              className="grid gap-3"
-            >
-              <div className="flex justify-between items-center">
-                <div className="flex gap-3">
-                  <CardTitle className="ml-2">Comment</CardTitle>
-                  <Badge>{comments.length}</Badge>
-                </div>
-                <CollapsibleTrigger asChild>
-                  <Button variant="ghost" size="sm" className="w-9 p-0 mr-4">
-                    <ChevronsUpDown className="h-4 w-4" />
-                    <span className="sr-only">Toggle</span>
-                  </Button>
-                </CollapsibleTrigger>
-              </div>
-              {/* Collapsible Comment */}
-              {comments.map((comment, key) => (
-                <CollapsibleContent className="space-y-2" key={key}>
-                  <div className="flex gap-4 m-2">
-                    <Avatar className="hidden h-12 w-12 sm:flex">
-                      <AvatarFallback></AvatarFallback>
-                    </Avatar>
-                    <div className="grid">
-                      <div className="flex gap-2 items-center">
-                        <div className="text-lg font-semibold text-blue-500">
-                          {comment.user.name}
-                        </div>
-                        <Pencil className="w-4 h-4" onClick={() => null} />
-                        <Trash
-                          className="w-4 h-4"
-                          onClick={() => handleDeleteComment(comment.id)}
-                        />
-                      </div>
-
-                      <div className="text-xs text-gray-500">
-                        {comment.created_at}
-                      </div>
-                      <div className="mt-3 text-sm">{comment.content}</div>
-                    </div>
-                  </div>
-                </CollapsibleContent>
-              ))}
-              {/* Comment Form */}
-              <div className="relative flex h-full flex-col rounded-xl bg-muted/50 p-4">
-                <form
-                  onSubmit={handleSubmit(onSubmitComment)}
-                  className="relative overflow-hidden rounded-lg border bg-background"
-                  x-chunk="dashboard-03-chunk-1"
-                >
-                  <Label htmlFor="content" className="sr-only">
-                    Message
-                  </Label>
-                  <Textarea
-                    id="content"
-                    placeholder="Type your comment here..."
-                    className="min-h-20 resize-none border-0 p-3 shadow-none focus-visible:ring-0 focus:ring-0"
-                    {...register("content")}
-                  />
-                  <ErrorMessage
-                    className="mx-2"
-                    errors={errors}
-                    name="content"
-                  />
-                  <div className="flex items-center p-3 pt-0">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <Paperclip className="size-4" />
-                            <span className="sr-only">Attach file</span>
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="top">Attach File</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    <Button type="submit" size="sm" className="ml-auto gap-1.5">
-                      Send
-                      <CornerDownLeft className="size-3.5" />
-                    </Button>
-                  </div>
-                </form>
-              </div>
-            </Collapsible>
+            <CommentList
+              comments={comments}
+              isOpenComment={isOpenComment}
+              setOpenComment={setOpenComment}
+              register={register}
+              errors={errors}
+              handleSubmit={handleSubmit}
+              onSubmitComment={onSubmitComment}
+              handleDeleteComment={handleDeleteComment}
+            />
           </CardContent>
         </Card>
         <Card
