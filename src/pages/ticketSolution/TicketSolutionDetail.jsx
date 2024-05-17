@@ -1,12 +1,15 @@
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  ChevronsUpDown,
   CornerDownLeft,
   Lightbulb,
   Paperclip,
+  Pencil,
   ThumbsDown,
   ThumbsUp,
+  Trash,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,16 +35,62 @@ import { UserRoleEnum } from "@/utils/EnumObject";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import ReactionService from "@/servers/ReactionService";
+import CommentService from "@/servers/CommentService";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import ErrorMessage from "@/components/custom/ErrorMessage";
+import { handleNullInputField } from "@/utils/HandleNullInputField";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+// import CommentList from "./ui/CommentList";
 
 const TicketSolutionDetail = () => {
   const { id } = useParams();
-  const [reaction, setReaction] = useState([]);
-  const [ticketSolution, setTicketSolution] = useState([]);
+  const [reaction, setReaction] = useState({});
+  const [comments, setComments] = useState([]);
+  const [ticketSolution, setTicketSolution] = useState({});
   const [isOpen, setOpen] = useState(false);
+  const [isOpenComment, setOpenComment] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const schema = yup.object().shape({
+    content: yup.string().max(2000, "Maximum 2000 characters"),
+  });
 
-  const fetchReactionDetail = async (id) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const fetchCommentList = async () => {
+    try {
+      var response = await CommentService.get(id);
+      setComments(response.result);
+    } catch (error) {
+      console.log("Error fetching data: ", error);
+    }
+  };
+
+  const onSubmitComment = async (data) => {
+    data = handleNullInputField(data);
+    console.log(data);
+    try {
+      await CommentService.add(id, data).then(() => {
+        fetchCommentList(id);
+      });
+    } catch (error) {
+      console.error("Add failed:", error);
+    }
+  };
+
+  const fetchReaction = async () => {
     try {
       var response = await ReactionService.get(id);
       var result = response.result;
@@ -51,7 +100,17 @@ const TicketSolutionDetail = () => {
     }
   };
 
-  const fetchData = async (id) => {
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await CommentService.delete(id, commentId).then(() => {
+        fetchCommentList();
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchData = async () => {
     setLoading(true);
     try {
       var response = await TicketSolutionService.getDetail(id);
@@ -64,11 +123,11 @@ const TicketSolutionDetail = () => {
     }
   };
 
-  const handleOpenUpdatePage = (id) => {
+  const handleOpenUpdatePage = () => {
     navigate(`/manager/ticket-solution/update/${id}`);
   };
 
-  const handleConfirmDelete = async (id) => {
+  const handleConfirmDelete = async () => {
     try {
       await TicketSolutionService.delete(id).then(() => {
         setOpen(false);
@@ -88,20 +147,20 @@ const TicketSolutionDetail = () => {
     setOpen(true);
   };
 
-  const handleLike = async (id) => {
+  const handleLike = async () => {
     try {
       await ReactionService.like(id).then(() => {
-        fetchReactionDetail(id);
+        fetchReaction(id);
       });
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleDislike = async (id) => {
+  const handleDislike = async () => {
     try {
       await ReactionService.dislike(id).then(() => {
-        fetchReactionDetail(id);
+        fetchReaction(id);
       });
     } catch (error) {
       console.log(error);
@@ -109,8 +168,9 @@ const TicketSolutionDetail = () => {
   };
 
   useEffect(() => {
-    fetchReactionDetail(id);
-    fetchData(id);
+    fetchReaction();
+    fetchCommentList();
+    fetchData();
   }, []);
 
   if (loading) return <Spinner size="medium" />;
@@ -180,7 +240,7 @@ const TicketSolutionDetail = () => {
           </CardHeader>
           <CardContent className="grid gap-6">
             <div className="grid gap-3">
-              <CardTitle>Content</CardTitle>
+              <CardTitle className="ml-2">Content</CardTitle>
               <div className="relative flex h-full flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
                 <Textarea
                   id="content"
@@ -192,7 +252,7 @@ const TicketSolutionDetail = () => {
               </div>
             </div>
             <div className="flex gap-8 h-auto">
-              <Label className="flex items-center">
+              <Label className="flex items-center ml-2">
                 Does this solution helpful
               </Label>
               <div className="flex gap-4 ">
@@ -200,7 +260,7 @@ const TicketSolutionDetail = () => {
                   <ThumbsUp
                     className="h-6 w-6"
                     color={reaction.my_reaction === 1 ? "#3f86d2" : "#000"}
-                    onClick={() => handleLike(id)}
+                    onClick={() => handleLike()}
                   />
                   <p className="text-sm text-gray-600 font-semibold">
                     {reaction.count_like}
@@ -210,7 +270,7 @@ const TicketSolutionDetail = () => {
                   <ThumbsDown
                     className="h-6 w-6"
                     color={reaction.my_reaction === 0 ? "#ff0000" : "#000"}
-                    onClick={() => handleDislike(id)}
+                    onClick={() => handleDislike()}
                   />
                   <p className="text-sm text-gray-600 font-semibold">
                     {reaction.count_dislike}
@@ -218,23 +278,71 @@ const TicketSolutionDetail = () => {
                 </div>
               </div>
             </div>
-            <div className="grid gap-3">
-              <div className="flex gap-3">
-                <CardTitle>Comment</CardTitle>
-                <Badge>[input numbers of comments later]</Badge>
+            {/* Comment */}
+            <Collapsible
+              open={isOpenComment}
+              onOpenChange={setOpenComment}
+              className="grid gap-3"
+            >
+              <div className="flex justify-between items-center">
+                <div className="flex gap-3">
+                  <CardTitle className="ml-2">Comment</CardTitle>
+                  <Badge>{comments.length}</Badge>
+                </div>
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" size="sm" className="w-9 p-0 mr-4">
+                    <ChevronsUpDown className="h-4 w-4" />
+                    <span className="sr-only">Toggle</span>
+                  </Button>
+                </CollapsibleTrigger>
               </div>
-              <div className="relative flex h-full flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
+              {/* Collapsible Comment */}
+              {comments.map((comment, key) => (
+                <CollapsibleContent className="space-y-2" key={key}>
+                  <div className="flex gap-4 m-2">
+                    <Avatar className="hidden h-12 w-12 sm:flex">
+                      <AvatarFallback></AvatarFallback>
+                    </Avatar>
+                    <div className="grid">
+                      <div className="flex gap-2 items-center">
+                        <div className="text-lg font-semibold text-blue-500">
+                          {comment.user.name}
+                        </div>
+                        <Pencil className="w-4 h-4" onClick={() => null} />
+                        <Trash
+                          className="w-4 h-4"
+                          onClick={() => handleDeleteComment(comment.id)}
+                        />
+                      </div>
+
+                      <div className="text-xs text-gray-500">
+                        {comment.created_at}
+                      </div>
+                      <div className="mt-3 text-sm">{comment.content}</div>
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              ))}
+              {/* Comment Form */}
+              <div className="relative flex h-full flex-col rounded-xl bg-muted/50 p-4">
                 <form
+                  onSubmit={handleSubmit(onSubmitComment)}
                   className="relative overflow-hidden rounded-lg border bg-background"
                   x-chunk="dashboard-03-chunk-1"
                 >
-                  <Label htmlFor="message" className="sr-only">
+                  <Label htmlFor="content" className="sr-only">
                     Message
                   </Label>
                   <Textarea
-                    id="message"
-                    placeholder="Type your message here..."
-                    className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0 focus:ring-0"
+                    id="content"
+                    placeholder="Type your comment here..."
+                    className="min-h-20 resize-none border-0 p-3 shadow-none focus-visible:ring-0 focus:ring-0"
+                    {...register("content")}
+                  />
+                  <ErrorMessage
+                    className="mx-2"
+                    errors={errors}
+                    name="content"
                   />
                   <div className="flex items-center p-3 pt-0">
                     <TooltipProvider>
@@ -255,7 +363,7 @@ const TicketSolutionDetail = () => {
                   </div>
                 </form>
               </div>
-            </div>
+            </Collapsible>
           </CardContent>
         </Card>
         <Card
