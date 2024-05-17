@@ -11,9 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useStateContext } from "@/contexts/AuthProvider";
+import { useAuth } from "@/contexts/AuthProvider";
 import AuthService from "@/servers/AuthService";
 import { Toaster } from "@/components/ui/toaster";
+import { RouteByRole } from "@/utils/RouteByRole";
 
 export function Login() {
   const [data, setData] = useState({
@@ -21,7 +22,7 @@ export function Login() {
     password: "",
   });
 
-  const { setUser, setToken } = useStateContext();
+  const { setUser, setToken } = useAuth();
   const navigate = useNavigate();
 
   const onChange = (e) => {
@@ -34,7 +35,8 @@ export function Login() {
       const response = await AuthService.login(data);
       setUser(response.result.user);
       setToken(response.result.token);
-      navigate("/manager");
+      const route = RouteByRole(response.result.user.role);
+      navigate(route);
     } catch (error) {
       console.error("Login failed:", error);
     }

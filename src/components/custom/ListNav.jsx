@@ -10,8 +10,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserRoleToEnum } from "@/utils/EnumObject";
 
-function ListNavBar(props) {
+function ListNavBar({ navigate, user }) {
   return (
     <div className="flex items-center">
       <TabsList>
@@ -46,16 +47,19 @@ function ListNavBar(props) {
             Export
           </span>
         </Button>
-        <Button
-          onClick={() => props.navigate("add")}
-          size="sm"
-          className="h-8 gap-1"
-        >
-          <PlusCircle className="h-3.5 w-3.5" />
-          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-            Add
-          </span>
-        </Button>
+        {(user.role === UserRoleToEnum.MANAGER ||
+          user.role === UserRoleToEnum.TECHNICIAN) && (
+          <Button
+            onClick={() => navigate("add")}
+            size="sm"
+            className="h-8 gap-1"
+          >
+            <PlusCircle className="h-3.5 w-3.5" />
+            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+              Add
+            </span>
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import UserService from "@/servers/UserService";
 import ErrorMessage from "@/components/custom/ErrorMessage";
-import { UserRoleEnum } from "@/utils/EnumObject";
+import { UserRoleToString } from "@/utils/EnumObject";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
@@ -56,7 +56,7 @@ const Profile = () => {
         setValue("name", result.name);
         setValue("email", result.email);
         setValue("phone", result.phone);
-        setValue("role", UserRoleEnum[result.role]);
+        setValue("role", UserRoleToString[result.role]);
       } catch (error) {
         console.log("Error fetching data: ", error);
       }

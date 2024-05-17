@@ -16,7 +16,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 import AuthService from "@/servers/AuthService";
 import { Toaster } from "@/components/ui/toaster";
 
-const ManagerLayout = () => {
+const CustomerLayout = () => {
   const { token, setUser, setToken } = useAuth();
   const navigate = useNavigate();
   const getNavLinkClass = ({ isActive }) =>
@@ -47,23 +47,17 @@ const ManagerLayout = () => {
         <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
           <nav className="hidden  flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6 whitespace-nowrap">
             <NavLink
-              to="/manager/home"
+              to="/customer/home"
               className="flex items-center gap-2 text-lg font-semibold md:text-base"
             >
               <Package2 className="h-6 w-6" />
               <span className="sr-only">Acme Inc</span>
             </NavLink>
-            <NavLink to="/manager/home" className={getNavLinkClass}>
+            <NavLink to="/customer/home" className={getNavLinkClass}>
               Home
             </NavLink>
-            <NavLink to="/manager/ticket-solution" className={getNavLinkClass}>
+            <NavLink to="/customer/ticket-solution" className={getNavLinkClass}>
               Ticket Solution
-            </NavLink>
-            <NavLink to="/manager/category" className={getNavLinkClass}>
-              Categories
-            </NavLink>
-            <NavLink to="/manager/service" className={getNavLinkClass}>
-              Services
             </NavLink>
           </nav>
           <Sheet>
@@ -80,26 +74,20 @@ const ManagerLayout = () => {
             <SheetContent side="left">
               <nav className="grid gap-6 text-lg font-medium">
                 <NavLink
-                  to="/manager/home"
+                  to="/customer/home"
                   className="flex items-center gap-2 text-lg font-semibold"
                 >
                   <Package2 className="h-6 w-6" />
                   <span className="sr-only">Acme Inc</span>
                 </NavLink>
-                <NavLink to="/manager/home" className={getNavLinkClass}>
+                <NavLink to="/customer/home" className={getNavLinkClass}>
                   Home
                 </NavLink>
                 <NavLink
-                  to="/manager/home/ticket-solution"
+                  to="/customer/home/ticket-solution"
                   className={getNavLinkClass}
                 >
                   Ticket Solution
-                </NavLink>
-                <NavLink to="/manager/category" className={getNavLinkClass}>
-                  Categories
-                </NavLink>
-                <NavLink to="/manager/service" className={getNavLinkClass}>
-                  Services
                 </NavLink>
               </nav>
             </SheetContent>
@@ -146,4 +134,4 @@ const ManagerLayout = () => {
   );
 };
 
-export default ManagerLayout;
+export default CustomerLayout;

@@ -1,17 +1,23 @@
-import { useContext } from "react";
-import { useState } from "react";
-import { createContext } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-const StateContext = createContext({
-  user: null,
-  token: null,
-  setUser: () => {},
-  setToken: () => {},
-});
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState({});
-  const [token, _setToken] = useState(localStorage.getItem("ACCESS_TOKEN"));
+  const [user, _setUser] = useState(() =>
+    JSON.parse(localStorage.getItem("USER"))
+  );
+  const [token, _setToken] = useState(() =>
+    localStorage.getItem("ACCESS_TOKEN")
+  );
+
+  const setUser = (user) => {
+    _setUser(user);
+    if (user) {
+      localStorage.setItem("USER", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("USER");
+    }
+  };
 
   const setToken = (token) => {
     _setToken(token);
@@ -21,18 +27,12 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("ACCESS_TOKEN");
     }
   };
+
   return (
-    <StateContext.Provider
-      value={{
-        user,
-        token,
-        setUser,
-        setToken,
-      }}
-    >
+    <AuthContext.Provider value={{ user, token, setUser, setToken }}>
       {children}
-    </StateContext.Provider>
+    </AuthContext.Provider>
   );
 };
 
-export const useStateContext = () => useContext(StateContext);
+export const useAuth = () => useContext(AuthContext);

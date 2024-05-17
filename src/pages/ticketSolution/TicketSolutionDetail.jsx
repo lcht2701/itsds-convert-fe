@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import TicketSolutionService from "@/servers/TicketSolutionService";
 import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
 import { Spinner } from "@/components/ui/spinner";
-import { UserRoleEnum } from "@/utils/EnumObject";
+import { UserRoleToEnum, UserRoleToString } from "@/utils/EnumObject";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import ReactionService from "@/servers/ReactionService";
@@ -25,9 +25,11 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { handleNullInputField } from "@/utils/HandleNullInputField";
 import CommentList from "./ui/CommentList";
+import { useAuth } from "@/contexts/AuthProvider";
 
 const TicketSolutionDetail = () => {
   const { id } = useParams();
+  const { user } = useAuth();
   const [reaction, setReaction] = useState({});
   const [comments, setComments] = useState([]);
   const [ticketSolution, setTicketSolution] = useState({});
@@ -189,40 +191,43 @@ const TicketSolutionDetail = () => {
         <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
           Ticket Solution Detail
         </h1>
-        <div className="ml-auto items-center gap-2 flex">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => handleApprove()}
-          >
-            Approve
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => handleReject()}
-          >
-            Reject
-          </Button>
-          <Button
-            type="button"
-            size="sm"
-            className="bg-blue-500 text-white"
-            onClick={() => handleOpenUpdatePage(ticketSolution.id)}
-          >
-            Update
-          </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            size="sm"
-            onClick={() => handleOpenDialog()}
-          >
-            Delete
-          </Button>
-        </div>
+        {(user.role === UserRoleToEnum.MANAGER ||
+          user.role === UserRoleToEnum.TECHNICIAN) && (
+          <div className="ml-auto items-center gap-2 flex">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => handleApprove()}
+            >
+              Approve
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => handleReject()}
+            >
+              Reject
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              className="bg-blue-500 text-white"
+              onClick={() => handleOpenUpdatePage(ticketSolution.id)}
+            >
+              Update
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => handleOpenDialog()}
+            >
+              Delete
+            </Button>
+          </div>
+        )}
       </div>
       <div className="grid gap-4 lg:grid-cols-6 xl:grid-cols-12">
         <Card
@@ -288,6 +293,7 @@ const TicketSolutionDetail = () => {
             </div>
             {/* Comment */}
             <CommentList
+              user={user}
               comments={comments}
               isOpenComment={isOpenComment}
               setOpenComment={setOpenComment}
@@ -346,7 +352,7 @@ const TicketSolutionDetail = () => {
             </div>
             <div className="grid grid-cols-2 text-sm">
               <div>Role</div>
-              <div>{UserRoleEnum[ticketSolution.owner?.role] || "-"}</div>
+              <div>{UserRoleToString[ticketSolution.owner?.role] || "-"}</div>
             </div>
           </CardContent>
         </Card>

@@ -52,15 +52,19 @@ const CommentList = (props) => {
               <AvatarFallback>{comment.user.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="grid">
-              <div className="flex gap-2 items-center">
+              <div className="flex gap-4 items-center">
                 <div className="text-lg font-semibold text-blue-500">
                   {comment.user.name}
                 </div>
-                <Pencil className="w-4 h-4" onClick={() => null} />
-                <Trash
-                  className="w-4 h-4"
-                  onClick={() => props.handleDeleteComment(comment.id)}
-                />
+                {comment.user.id === props.user.id && (
+                  <div className="flex gap-2">
+                    <Pencil className="w-4 h-4" onClick={() => null} />
+                    <Trash
+                      className="w-4 h-4"
+                      onClick={() => props.handleDeleteComment(comment.id)}
+                    />{" "}
+                  </div>
+                )}
               </div>
 
               <div className="text-xs text-gray-500">{comment.created_at}</div>

@@ -22,20 +22,24 @@ import CustomPagination from "@/components/custom/CustomPagination";
 import { useNavigate } from "react-router-dom";
 import TicketSolutionService from "@/servers/TicketSolutionService";
 import ListNavBar from "@/components/custom/ListNav";
+import { useAuth } from "@/contexts/AuthProvider";
+import { RouteByRole } from "@/utils/RouteByRole";
 
 const TicketSolutionList = () => {
+  const { user } = useAuth();
   const [ticketSolutions, setTicketSolutions] = useState([]);
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+  const route = RouteByRole(user.role);
 
   const onChangePage = (pageNumber) => {
     if (pageNumber !== null) setCurrentPage(pageNumber);
   };
 
   const handleOpenDetailPage = (id) => {
-    navigate(`/manager/ticket-solution/detail/${id}`);
+    navigate(`${route}/ticket-solution/detail/${id}`);
   };
 
   const fetchData = useCallback(async () => {
@@ -51,6 +55,7 @@ const TicketSolutionList = () => {
   }, [currentPage]);
 
   useEffect(() => {
+    console.log(user);
     fetchData();
   }, [currentPage, fetchData]);
 
@@ -58,7 +63,7 @@ const TicketSolutionList = () => {
     <>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
         <Tabs defaultValue="all">
-          <ListNavBar navigate={navigate} />
+          <ListNavBar navigate={navigate} user={user} />
           <TabsContent value="all">
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>
