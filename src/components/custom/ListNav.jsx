@@ -10,9 +10,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserRoleToEnum } from "@/utils/EnumObject";
+import { useAuth } from "@/contexts/AuthProvider";
 
-function ListNavBar({ navigate, user }) {
+function ListNavBar({ navigate, acceptedRoles }) {
+  const { user } = useAuth();
   return (
     <div className="flex items-center">
       <TabsList>
@@ -47,8 +48,7 @@ function ListNavBar({ navigate, user }) {
             Export
           </span>
         </Button>
-        {(user.role === UserRoleToEnum.MANAGER ||
-          user.role === UserRoleToEnum.TECHNICIAN) && (
+        {acceptedRoles.includes(user.role) && (
           <Button
             onClick={() => navigate("add")}
             size="sm"

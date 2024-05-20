@@ -24,6 +24,7 @@ import TicketSolutionService from "@/servers/TicketSolutionService";
 import ListNavBar from "@/components/custom/ListNav";
 import { useAuth } from "@/contexts/AuthProvider";
 import { RouteByRole } from "@/utils/RouteByRole";
+import { UserRoleToEnum } from "@/utils/EnumObject";
 
 const TicketSolutionList = () => {
   const { user } = useAuth();
@@ -63,7 +64,10 @@ const TicketSolutionList = () => {
     <>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
         <Tabs defaultValue="all">
-          <ListNavBar navigate={navigate} user={user} />
+          <ListNavBar
+            navigate={navigate}
+            acceptedRoles={[UserRoleToEnum.MANAGER, UserRoleToEnum.TECHNICIAN]}
+          />
           <TabsContent value="all">
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>

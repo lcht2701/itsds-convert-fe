@@ -59,6 +59,9 @@ const ManagerLayout = () => {
             <NavLink to="/manager/ticket-solution" className={getNavLinkClass}>
               Ticket Solution
             </NavLink>
+            <NavLink to="/manager/company" className={getNavLinkClass}>
+              Companies
+            </NavLink>
             <NavLink to="/manager/category" className={getNavLinkClass}>
               Categories
             </NavLink>
@@ -94,6 +97,9 @@ const ManagerLayout = () => {
                   className={getNavLinkClass}
                 >
                   Ticket Solution
+                </NavLink>
+                <NavLink to="/manager/company" className={getNavLinkClass}>
+                  Companies
                 </NavLink>
                 <NavLink to="/manager/category" className={getNavLinkClass}>
                   Categories

@@ -34,7 +34,7 @@ class AuthService {
       console.log(response);
       toast({
         title: "Successful",
-        description: `${response.data.message}`,
+        description: `${response.data?.message}`,
       });
     } catch (error) {
       console.error("Error during the login process:", error);

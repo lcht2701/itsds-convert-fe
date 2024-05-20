@@ -31,6 +31,7 @@ import CustomPagination from "@/components/custom/CustomPagination";
 import { useNavigate } from "react-router-dom";
 import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
 import ListNavBar from "@/components/custom/ListNav";
+import { UserRoleToEnum } from "@/utils/EnumObject";
 
 const ServiceList = () => {
   const [services, setServices] = useState([]);
@@ -88,7 +89,10 @@ const ServiceList = () => {
     <>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
         <Tabs defaultValue="all">
-          <ListNavBar navigate={navigate} />
+          <ListNavBar
+            navigate={navigate}
+            acceptedRoles={[UserRoleToEnum.MANAGER]}
+          />
           <TabsContent value="all">
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>

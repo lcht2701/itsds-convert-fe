@@ -30,6 +30,7 @@ import CompanyAdminLayout from "./layouts/CompanyAdminLayout";
 import { HomeCompanyAdmin } from "./pages/home/HomeCompanyAdmin";
 import TechnicianLayout from "./layouts/TechnicianLayout";
 import { HomeTechnician } from "./pages/home/HomeTechnician";
+import CompanyList from "./pages/company/CompanyList";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -115,6 +116,9 @@ const router = createBrowserRouter(
             path="ticket-solution/update/:id"
             element={<UpdateTicketSolution />}
           />
+          <Route path="company" element={<CompanyList />} />
+          <Route path="company/add" element={<AddCategory />} />
+          <Route path="company/update/:id" element={<UpdateCategory />} />
           <Route path="category" element={<CategoryList />} />
           <Route path="category/add" element={<AddCategory />} />
           <Route path="category/update/:id" element={<UpdateCategory />} />

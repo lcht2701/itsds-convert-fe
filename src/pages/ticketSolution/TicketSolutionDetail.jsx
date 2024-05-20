@@ -215,7 +215,7 @@ const TicketSolutionDetail = () => {
             </>
           )}
           {(user.role === UserRoleToEnum.MANAGER ||
-            user.id === ticketSolution.createdBy.id) && (
+            user.id === ticketSolution.createdBy?.id) && (
             <>
               <Button
                 type="button"
@@ -328,7 +328,7 @@ const TicketSolutionDetail = () => {
             <CardTitle className="text-lg">Solution Detail</CardTitle>
             <div className="grid grid-cols-2 text-sm">
               <div>Keyword</div>
-              <div>{ticketSolution.keyword || "-"}</div>
+              <div className="truncate">{ticketSolution.keyword || "-"}</div>
             </div>
             <div className="grid grid-cols-2 text-sm">
               <div>Reviewed Date</div>

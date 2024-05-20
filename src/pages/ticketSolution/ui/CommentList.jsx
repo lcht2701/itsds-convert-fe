@@ -33,7 +33,7 @@ const CommentList = (props) => {
       className="grid gap-3"
     >
       <div className="flex justify-between items-center">
-        <div className="flex gap-3">
+        <div className="flex gap-3 h-auto">
           <CardTitle className="ml-2">Comment</CardTitle>
           <Badge>{props.comments.length}</Badge>
         </div>

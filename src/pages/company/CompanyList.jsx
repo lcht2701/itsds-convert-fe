@@ -25,16 +25,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import CategoryService from "@/servers/CategoryService";
+import CompanyService from "@/servers/CompanyService";
 import { Spinner } from "@/components/ui/spinner";
 import CustomPagination from "@/components/custom/CustomPagination";
 import { useNavigate } from "react-router-dom";
 import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
 import ListNavBar from "@/components/custom/ListNav";
+import { useAuth } from "@/contexts/AuthProvider";
 import { UserRoleToEnum } from "@/utils/EnumObject";
 
-const CategoryList = () => {
-  const [categories, setCategories] = useState([]);
+const CompanyList = () => {
+  const { user } = useAuth();
+  const [companies, setCompanies] = useState([]);
   const [paginationData, setPaginationData] = useState({});
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,8 +45,8 @@ const CategoryList = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      var response = await CategoryService.getPaginatedList(currentPage);
-      setCategories(response.result.data);
+      var response = await CompanyService.getPaginatedList(currentPage);
+      setCompanies(response.result.data);
       setPaginationData(response.result.pagination);
     } catch (error) {
       console.log("Error fetching data: ", error);
@@ -57,13 +59,13 @@ const CategoryList = () => {
     if (pageNumber !== null) setCurrentPage(pageNumber);
   };
 
-  const handleOpenUpdateCategory = (id) => {
-    navigate(`/manager/category/update/${id}`);
+  const handleOpenUpdateCompany = (id) => {
+    navigate(`/manager/company/update/${id}`);
   };
 
   const handleConfirmDelete = async (id) => {
     try {
-      await CategoryService.delete(id).then(() => {
+      await CompanyService.delete(id).then(() => {
         setActiveDialogId(null);
         setLoading(true);
         fetchData();
@@ -96,9 +98,9 @@ const CategoryList = () => {
           <TabsContent value="all">
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>
-                <CardTitle>Categories</CardTitle>
+                <CardTitle>Companies</CardTitle>
                 <CardDescription>
-                  Manage categories and their details
+                  Manage companies and their details
                 </CardDescription>
               </CardHeader>
               {loading ? (
@@ -126,22 +128,22 @@ const CategoryList = () => {
                     </TableHeader>
 
                     <TableBody>
-                      {categories?.map((category, key) => (
+                      {companies?.map((company, key) => (
                         <TableRow key={key}>
                           <TableCell className="hidden sm:table-cell">
-                            {category.id}
+                            {company.id}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {category.name}
+                            {company.name}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {category.description || "-"}
+                            {company.description || "-"}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            {category.created_at}
+                            {company.created_at}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            {category.updated_at}
+                            {company.updated_at}
                           </TableCell>
                           <TableCell>
                             <DropdownMenu>
@@ -159,13 +161,13 @@ const CategoryList = () => {
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                 <DropdownMenuItem
                                   onClick={() =>
-                                    handleOpenUpdateCategory(category.id)
+                                    handleOpenUpdateCompany(company.id)
                                   }
                                 >
                                   Update
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                  onClick={() => handleOpenDialog(category.id)}
+                                  onClick={() => handleOpenDialog(company.id)}
                                 >
                                   Delete
                                 </DropdownMenuItem>
@@ -190,7 +192,7 @@ const CategoryList = () => {
 
         <ConfirmDialog
           isOpen={activeDialogId !== null}
-          content="Do you want to delete this category?"
+          content="Do you want to delete this company?"
           onCancel={handleCancel}
           onConfirm={() => {
             handleConfirmDelete(activeDialogId);
@@ -201,4 +203,4 @@ const CategoryList = () => {
   );
 };
 
-export default CategoryList;
+export default CompanyList;
