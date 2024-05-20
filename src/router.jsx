@@ -31,6 +31,9 @@ import { HomeCompanyAdmin } from "./pages/home/HomeCompanyAdmin";
 import TechnicianLayout from "./layouts/TechnicianLayout";
 import { HomeTechnician } from "./pages/home/HomeTechnician";
 import CompanyList from "./pages/company/CompanyList";
+import UpdateCompany from "./pages/company/UpdateCompany";
+import AddCompany from "./pages/company/AddCompany";
+import CompanyDetail from "./pages/company/CompanyDetail";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -54,7 +57,7 @@ const router = createBrowserRouter(
           <Route path="home" element={<HomeCustomer />} />
           <Route path="ticket-solution" element={<TicketSolutionList />} />
           <Route
-            path="ticket-solution/detail/:id"
+            path="ticket-solution/:id"
             element={<TicketSolutionDetail />}
           />
           <Route path="setting/profile" element={<Profile />} />
@@ -73,7 +76,7 @@ const router = createBrowserRouter(
           <Route path="home" element={<HomeCompanyAdmin />} />
           <Route path="ticket-solution" element={<TicketSolutionList />} />
           <Route
-            path="ticket-solution/detail/:id"
+            path="ticket-solution/:id"
             element={<TicketSolutionDetail />}
           />
           <Route path="setting/profile" element={<Profile />} />
@@ -89,7 +92,7 @@ const router = createBrowserRouter(
           <Route path="home" element={<HomeTechnician />} />
           <Route path="ticket-solution" element={<TicketSolutionList />} />
           <Route
-            path="ticket-solution/detail/:id"
+            path="ticket-solution/:id"
             element={<TicketSolutionDetail />}
           />
           <Route path="ticket-solution/add" element={<AddTicketSolution />} />
@@ -108,7 +111,7 @@ const router = createBrowserRouter(
           <Route path="home" element={<HomeManager />} />
           <Route path="ticket-solution" element={<TicketSolutionList />} />
           <Route
-            path="ticket-solution/detail/:id"
+            path="ticket-solution/:id"
             element={<TicketSolutionDetail />}
           />
           <Route path="ticket-solution/add" element={<AddTicketSolution />} />
@@ -117,8 +120,9 @@ const router = createBrowserRouter(
             element={<UpdateTicketSolution />}
           />
           <Route path="company" element={<CompanyList />} />
-          <Route path="company/add" element={<AddCategory />} />
-          <Route path="company/update/:id" element={<UpdateCategory />} />
+          <Route path="company/add" element={<AddCompany />} />
+          <Route path="company/update/:id" element={<UpdateCompany />} />
+          <Route path="company/:id" element={<CompanyDetail />} />
           <Route path="category" element={<CategoryList />} />
           <Route path="category/add" element={<AddCategory />} />
           <Route path="category/update/:id" element={<UpdateCategory />} />

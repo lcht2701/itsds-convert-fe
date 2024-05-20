@@ -22,25 +22,21 @@ import CustomPagination from "@/components/custom/CustomPagination";
 import { useNavigate } from "react-router-dom";
 import TicketSolutionService from "@/servers/TicketSolutionService";
 import ListNavBar from "@/components/custom/ListNav";
-import { useAuth } from "@/contexts/AuthProvider";
-import { RouteByRole } from "@/utils/RouteByRole";
 import { UserRoleToEnum } from "@/utils/EnumObject";
 
 const TicketSolutionList = () => {
-  const { user } = useAuth();
   const [ticketSolutions, setTicketSolutions] = useState([]);
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
-  const route = RouteByRole(user.role);
 
   const onChangePage = (pageNumber) => {
     if (pageNumber !== null) setCurrentPage(pageNumber);
   };
 
   const handleOpenDetailPage = (id) => {
-    navigate(`${route}/ticket-solution/detail/${id}`);
+    navigate(`${id}`);
   };
 
   const fetchData = useCallback(async () => {
@@ -56,7 +52,6 @@ const TicketSolutionList = () => {
   }, [currentPage]);
 
   useEffect(() => {
-    console.log(user);
     fetchData();
   }, [currentPage, fetchData]);
 

@@ -31,11 +31,11 @@ import CustomPagination from "@/components/custom/CustomPagination";
 import { useNavigate } from "react-router-dom";
 import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
 import ListNavBar from "@/components/custom/ListNav";
-import { useAuth } from "@/contexts/AuthProvider";
 import { UserRoleToEnum } from "@/utils/EnumObject";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const CompanyList = () => {
-  const { user } = useAuth();
   const [companies, setCompanies] = useState([]);
   const [paginationData, setPaginationData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -54,6 +54,10 @@ const CompanyList = () => {
       setLoading(false);
     }
   }, [currentPage]);
+
+  const handleOpenDetailPage = (id) => {
+    navigate(`${id}`);
+  };
 
   const onChangePage = (pageNumber) => {
     if (pageNumber !== null) setCurrentPage(pageNumber);
@@ -111,10 +115,12 @@ const CompanyList = () => {
                     <TableHeader>
                       <TableRow>
                         <TableHead className="hidden w-[100px] sm:table-cell">
-                          <span className="sr-only">Id</span>
+                          <span className="sr-only"></span>
                         </TableHead>
                         <TableHead>Name</TableHead>
-                        <TableHead>Description</TableHead>
+                        <TableHead>Phone</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Status</TableHead>
                         <TableHead className="hidden md:table-cell">
                           Created at
                         </TableHead>
@@ -129,15 +135,36 @@ const CompanyList = () => {
 
                     <TableBody>
                       {companies?.map((company, key) => (
-                        <TableRow key={key}>
+                        <TableRow
+                          key={key}
+                          onClick={() => handleOpenDetailPage(company.id)}
+                        >
                           <TableCell className="hidden sm:table-cell">
-                            {company.id}
+                            <Avatar>
+                              <AvatarImage
+                                src={company.logo_url}
+                                alt={company.company_name.charAt(0)}
+                              />
+                              <AvatarFallback>
+                                {company.company_name.charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
                           </TableCell>
                           <TableCell className="font-medium">
-                            {company.name}
+                            {company.company_name || "-"}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {company.description || "-"}
+                            {company.phone || "-"}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {company.email || "-"}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {company.is_active ? (
+                              <Badge>Active</Badge>
+                            ) : (
+                              <Badge variant="destructive">Inactive</Badge>
+                            )}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
                             {company.created_at}

@@ -6,8 +6,6 @@ const apiClient = axios.create({
   withXSRFToken: true,
 });
 
-apiClient.defaults.headers.common["Content-Type"] =
-  "application/json; charset=utf-8";
 apiClient.defaults.headers.common["Accept"] = "application/json";
 
 apiClient.interceptors.request.use((config) => {
@@ -23,7 +21,7 @@ apiClient.interceptors.response.use(
   (error) => {
     try {
       const { response } = error;
-      if (response.status === 401) {
+      if (response && response.status === 401) {
         localStorage.removeItem("ACCESS_TOKEN");
       }
     } catch (err) {

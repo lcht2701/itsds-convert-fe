@@ -70,7 +70,7 @@ const AddService = () => {
   }, []);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit(id))}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <main className="grid flex-1 gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 ">
         <div className="grid max-w-[59rem] flex-1 auto-rows-max gap-4">
           <DetailNavbar name="Add Service" />
