@@ -43,7 +43,7 @@ const CompanyDetail = () => {
   const fetchCompanyMembers = async () => {
     try {
       var response = await CompanyMemberService.get(id);
-      var result = response.result;
+      var result = response.result.data;
       setCompanyMembers(result);
     } catch (error) {
       console.log("Error fetching data: ", error);
@@ -143,14 +143,14 @@ const CompanyDetail = () => {
               companyId={company.id}
               companyAddresses={companyAddresses}
               onReload={() => fetchCompanyAddresses()}
-            ></CompanyAddressTab>
+            />
           </TabsContent>
           <TabsContent value="member">
             <CompanyMemberTab
               companyId={company.id}
               companyMembers={companyMembers}
-              onReload={() => fetchCompanyAddresses()}
-            ></CompanyMemberTab>
+              onReload={() => fetchCompanyMembers()}
+            />
           </TabsContent>
         </Tabs>
       </div>

@@ -2,9 +2,11 @@ import { toast } from "@/components/ui/use-toast";
 import apiClient from "./ApiClient";
 
 class CompanyMemberService {
-  async getSelectList() {
+  async getSelectList(companyId) {
     try {
-      const response = await apiClient.get(`/api/company/select`);
+      const response = await apiClient.get(
+        `/api/company/${companyId}/member/select`
+      );
       console.log(response.data);
       return response.data;
     } catch (error) {

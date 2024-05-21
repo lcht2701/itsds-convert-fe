@@ -51,8 +51,6 @@ export function CompanyAddressDialog({
           const response = await CompanyAddressService.getDetail(companyId, id);
           const result = response.result;
           setValue("address", result.address);
-        } else {
-          setValue("address", null);
         }
       } catch (error) {
         console.log("Error fetching data: ", error);
