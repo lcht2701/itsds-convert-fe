@@ -10,13 +10,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Table,
   TableBody,
   TableCell,
@@ -40,7 +33,6 @@ const CompanyList = () => {
   const [paginationData, setPaginationData] = useState({});
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeDialogId, setActiveDialogId] = useState(null);
   const navigate = useNavigate();
 
   const fetchData = useCallback(async () => {
@@ -61,30 +53,6 @@ const CompanyList = () => {
 
   const onChangePage = (pageNumber) => {
     if (pageNumber !== null) setCurrentPage(pageNumber);
-  };
-
-  const handleOpenUpdateCompany = (id) => {
-    navigate(`/manager/company/update/${id}`);
-  };
-
-  const handleConfirmDelete = async (id) => {
-    try {
-      await CompanyService.delete(id).then(() => {
-        setActiveDialogId(null);
-        setLoading(true);
-        fetchData();
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleCancel = () => {
-    setActiveDialogId(null);
-  };
-
-  const handleOpenDialog = (id) => {
-    setActiveDialogId(id);
   };
 
   useEffect(() => {
@@ -126,9 +94,6 @@ const CompanyList = () => {
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
                           Updated at
-                        </TableHead>
-                        <TableHead>
-                          <span className="sr-only">Actions</span>
                         </TableHead>
                       </TableRow>
                     </TableHeader>
@@ -172,35 +137,6 @@ const CompanyList = () => {
                           <TableCell className="hidden md:table-cell">
                             {company.updated_at}
                           </TableCell>
-                          <TableCell>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  aria-haspopup="true"
-                                  size="icon"
-                                  variant="ghost"
-                                >
-                                  <MoreHorizontal className="h-4 w-4" />
-                                  <span className="sr-only">Toggle menu</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    handleOpenUpdateCompany(company.id)
-                                  }
-                                >
-                                  Update
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => handleOpenDialog(company.id)}
-                                >
-                                  Delete
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -216,15 +152,6 @@ const CompanyList = () => {
             </Card>
           </TabsContent>
         </Tabs>
-
-        <ConfirmDialog
-          isOpen={activeDialogId !== null}
-          content="Do you want to delete this company?"
-          onCancel={handleCancel}
-          onConfirm={() => {
-            handleConfirmDelete(activeDialogId);
-          }}
-        />
       </main>
     </>
   );

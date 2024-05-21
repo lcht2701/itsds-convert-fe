@@ -1,100 +1,38 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Lightbulb, ThumbsDown, ThumbsUp } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import React, { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import TicketSolutionService from "@/servers/TicketSolutionService";
+import CompanyService from "@/servers/CompanyService";
 import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
 import { Spinner } from "@/components/ui/spinner";
-import { UserRoleToEnum, UserRoleToString } from "@/utils/EnumObject";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import ReactionService from "@/servers/ReactionService";
-import CommentService from "@/servers/CommentService";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { handleNullInputField } from "@/utils/HandleNullInputField";
+import { UserRoleToEnum } from "@/utils/EnumObject";
 import { useAuth } from "@/contexts/AuthProvider";
 import { RouteByRole } from "@/utils/RouteByRole";
+import CompanyMemberService from "@/servers/CompanyMemberService";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TabsContent } from "@radix-ui/react-tabs";
+import CompanyAddressService from "@/servers/CompanyAddressService";
+import CompanyAddressTab from "./ui/CompanyAddressTab";
+import CompanyMemberTab from "./ui/CompanyMemberTab";
+import { CompanyDetailCard } from "./ui/CompanyDetailCard";
 
 const CompanyDetail = () => {
   const { id } = useParams();
   const { user } = useAuth();
-  const [reaction, setReaction] = useState({});
-  const [ticketSolution, setTicketSolution] = useState({});
+  const [company, setCompany] = useState({});
+  const [companyAddresses, setCompanyAddresses] = useState([]);
+  const [companyMembers, setCompanyMembers] = useState([]);
   const [isOpen, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const route = RouteByRole(user.role);
   const navigate = useNavigate();
-  const schema = yup.object().shape({
-    content: yup.string().max(2000, "Maximum 2000 characters"),
-  });
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
-  const fetchCommentList = async () => {
-    try {
-      var response = await CommentService.get(id);
-      setComments(response.result);
-    } catch (error) {
-      console.log("Error fetching data: ", error);
-    }
-  };
-
-  const onSubmitComment = async (data) => {
-    data = handleNullInputField(data);
-    console.log(data);
-    try {
-      await CommentService.add(id, data).then(() => {
-        fetchCommentList(id);
-      });
-    } catch (error) {
-      console.error("Add failed:", error);
-    }
-  };
-
-  const fetchReaction = async () => {
-    try {
-      var response = await ReactionService.get(id);
-      var result = response.result;
-      setReaction(result);
-    } catch (error) {
-      console.log("Error fetching data: ", error);
-    }
-  };
-
-  const handleDeleteComment = async (commentId) => {
-    try {
-      await CommentService.delete(id, commentId).then(() => {
-        fetchCommentList();
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      var response = await TicketSolutionService.getDetail(id);
+      var response = await CompanyService.getDetail(id);
       var result = response.result;
-      setTicketSolution(result);
+      setCompany(result);
     } catch (error) {
       console.log("Error fetching data: ", error);
     } finally {
@@ -102,13 +40,33 @@ const CompanyDetail = () => {
     }
   };
 
+  const fetchCompanyMembers = async () => {
+    try {
+      var response = await CompanyMemberService.get(id);
+      var result = response.result;
+      setCompanyMembers(result);
+    } catch (error) {
+      console.log("Error fetching data: ", error);
+    }
+  };
+
+  const fetchCompanyAddresses = async () => {
+    try {
+      var response = await CompanyAddressService.get(id);
+      var result = response.result;
+      setCompanyAddresses(result);
+    } catch (error) {
+      console.log("Error fetching data: ", error);
+    }
+  };
+
   const handleOpenUpdatePage = () => {
-    navigate(`${route}/ticket-solution/update/${id}`);
+    navigate(`${route}/company/update/${id}`);
   };
 
   const handleConfirmDelete = async () => {
     try {
-      await TicketSolutionService.delete(id).then(() => {
+      await CompanyService.delete(id).then(() => {
         setOpen(false);
         setLoading(true);
         navigate(-1);
@@ -126,49 +84,9 @@ const CompanyDetail = () => {
     setOpen(true);
   };
 
-  const handleLike = async () => {
-    try {
-      await ReactionService.like(id).then(() => {
-        fetchReaction(id);
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleDislike = async () => {
-    try {
-      await ReactionService.dislike(id).then(() => {
-        fetchReaction(id);
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleApprove = async () => {
-    try {
-      await TicketSolutionService.approve(id).then(() => {
-        fetchData();
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleReject = async () => {
-    try {
-      await TicketSolutionService.reject(id).then(() => {
-        fetchData();
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    fetchReaction();
-    fetchCommentList();
+    fetchCompanyAddresses();
+    fetchCompanyMembers();
     fetchData();
   }, []);
 
@@ -188,37 +106,16 @@ const CompanyDetail = () => {
           <span className="sr-only">Back</span>
         </Button>
         <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-          Ticket Solution Detail
+          Company Detail
         </h1>
         <div className="ml-auto items-center gap-2 flex">
           {user.role === UserRoleToEnum.MANAGER && (
             <>
               <Button
                 type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => handleApprove()}
-              >
-                Approve
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => handleReject()}
-              >
-                Reject
-              </Button>
-            </>
-          )}
-          {(user.role === UserRoleToEnum.MANAGER ||
-            user.id === ticketSolution.createdBy?.id) && (
-            <>
-              <Button
-                type="button"
                 size="sm"
                 className="bg-blue-500 text-white"
-                onClick={() => handleOpenUpdatePage(ticketSolution.id)}
+                onClick={() => handleOpenUpdatePage(company.id)}
               >
                 Update
               </Button>
@@ -234,128 +131,35 @@ const CompanyDetail = () => {
           )}
         </div>
       </div>
-      <div className="grid gap-4 lg:grid-cols-6 xl:grid-cols-12">
-        <Card
-          className="lg:col-span-4 xl:col-span-9"
-          x-chunk="dashboard-01-chunk-4"
-        >
-          <CardHeader className="flex flex-row items-center">
-            <div className="flex items-center gap-4">
-              <Avatar className="hidden h-16 w-16 sm:flex">
-                <AvatarFallback className="text-yellow-400">
-                  <Lightbulb className="h-8 w-8" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="grid gap-1">
-                <p className="text-3xl font-medium leading-none">
-                  {ticketSolution.title}
-                </p>
-                <p className="text-lg text-muted-foreground">
-                  Service: {ticketSolution.service?.name}
-                </p>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="grid gap-6">
-            <div className="grid gap-3">
-              <CardTitle className="ml-2">Content</CardTitle>
-              <div className="relative flex h-full flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
-                <Textarea
-                  id="content"
-                  name="content"
-                  className="min-h-64"
-                  value={ticketSolution.content}
-                  disabled
-                />
-              </div>
-            </div>
-            <div className="flex gap-8 h-auto">
-              <Label className="flex items-center ml-2">
-                Does this solution helpful
-              </Label>
-              <div className="flex gap-4 ">
-                <div className="flex gap-2">
-                  <ThumbsUp
-                    className="h-6 w-6"
-                    color={reaction.my_reaction === 1 ? "#3f86d2" : "#000"}
-                    onClick={() => handleLike()}
-                  />
-                  <p className="text-sm text-gray-600 font-semibold">
-                    {reaction.count_like}
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <ThumbsDown
-                    className="h-6 w-6"
-                    color={reaction.my_reaction === 0 ? "#ff0000" : "#000"}
-                    onClick={() => handleDislike()}
-                  />
-                  <p className="text-sm text-gray-600 font-semibold">
-                    {reaction.count_dislike}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card
-          className="lg:col-span-2 xl:col-span-3"
-          x-chunk="dashboard-01-chunk-5"
-        >
-          <CardHeader>
-            <CardTitle>More</CardTitle>
-            <CardDescription>
-              Related information about this ticket solution
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="grid gap-4">
-            <CardTitle className="text-lg">Solution Detail</CardTitle>
-            <div className="grid grid-cols-2 text-sm">
-              <div>Keyword</div>
-              <div className="truncate">{ticketSolution.keyword || "-"}</div>
-            </div>
-            <div className="grid grid-cols-2 text-sm">
-              <div>Reviewed Date</div>
-              <div>{ticketSolution.review_date || "-"}</div>
-            </div>
-            <div className="grid grid-cols-2 text-sm">
-              <div>Created By</div>
-              <div className="font-bold text-blue-500">
-                {ticketSolution.createdBy?.name || "-"}
-              </div>
-            </div>
-            <div className="grid grid-cols-2 text-sm">
-              <div>Created At</div>
-              <div>{ticketSolution.created_at || "-"}</div>
-            </div>
-            <div className="grid grid-cols-2 text-sm">
-              <div>Updated At</div>
-              <div>{ticketSolution.updated_at || "-"}</div>
-            </div>
-            <Separator />
-            <CardTitle className="text-lg">Solution Owner</CardTitle>
-            <div className="grid grid-cols-2 text-sm">
-              <div>Name</div>
-              <div>{ticketSolution.owner?.name || "-"}</div>
-            </div>
-            <div className="grid grid-cols-2 text-sm">
-              <div>Email</div>
-              <div>{ticketSolution.owner?.email || "-"}</div>
-            </div>
-            <div className="grid grid-cols-2 text-sm">
-              <div>Role</div>
-              <div>{UserRoleToString[ticketSolution.owner?.role] || "-"}</div>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid gap-8">
+        <CompanyDetailCard company={company} />
+        <Tabs defaultValue="address" className="grid">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="address">Addresses</TabsTrigger>
+            <TabsTrigger value="member">Members</TabsTrigger>
+          </TabsList>
+          <TabsContent value="address">
+            <CompanyAddressTab
+              companyId={company.id}
+              companyAddresses={companyAddresses}
+              onReload={() => fetchCompanyAddresses()}
+            ></CompanyAddressTab>
+          </TabsContent>
+          <TabsContent value="member">
+            <CompanyMemberTab
+              companyId={company.id}
+              companyMembers={companyMembers}
+              onReload={() => fetchCompanyAddresses()}
+            ></CompanyMemberTab>
+          </TabsContent>
+        </Tabs>
       </div>
       <ConfirmDialog
         isOpen={isOpen}
-        content="Do you want to delete this solution?"
+        content="Do you want to delete this company?"
         onCancel={handleCancel}
         onConfirm={() => {
-          handleConfirmDelete(ticketSolution.id);
+          handleConfirmDelete(company.id);
         }}
       />
     </div>

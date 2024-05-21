@@ -13,11 +13,13 @@ import { useEffect, useState } from "react";
 import CompanyService from "@/servers/CompanyService";
 import { useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { handleNullInputField } from "@/utils/HandleNullInputField";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorMessage from "@/components/custom/ErrorMessage";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 
 const UpdateCompany = () => {
   const { id } = useParams();
@@ -42,10 +44,12 @@ const UpdateCompany = () => {
       .matches(/^\d+$/, "Phone Number can only contains digits"),
     email: yup.string().email("Email address must be valid"),
     field_of_business: yup.string().max(255, "Max 255 characters"),
+    is_active: yup.boolean(),
   });
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
     setValue,
@@ -76,6 +80,7 @@ const UpdateCompany = () => {
         setValue("email", result.email);
         setValue("field_of_business", result.field_of_business);
         setValue("company_website", result.company_website);
+        setValue("is_active", result.is_active);
       } catch (error) {
         console.log("Error fetching data: ", error);
       } finally {
@@ -101,20 +106,47 @@ const UpdateCompany = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="logo">Logo</Label>
-                <Input
-                  id="logo"
-                  name="logo"
-                  type="file"
-                  className="w-full"
-                  disabled
-                  {...register("logo")}
-                />
-                <ErrorMessage errors={errors} name="logo" />
+              <div className="grid gap-6">
+                <div className="grid grid-cols-2 gap-10">
+                  <div className="grid gap-3">
+                    <Label htmlFor="logo">Logo</Label>
+                    <Input
+                      id="logo"
+                      name="logo"
+                      type="file"
+                      className="w-full"
+                      disabled
+                      {...register("logo")}
+                    />
+                    <ErrorMessage errors={errors} name="logo" />
+                  </div>
+                  <div>
+                    <Controller
+                      id="is_active"
+                      name="is_active"
+                      control={control}
+                      render={({ field }) => (
+                        <div className="grid gap-3">
+                          <Label
+                            htmlFor="is_active"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            Set Active
+                          </Label>
+                          <Switch
+                            className="mt-2"
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </div>
+                      )}
+                    />
+                    <ErrorMessage errors={errors} name="is_active" />
+                  </div>
+                </div>
               </div>
               <div className="grid gap-6">
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-10">
                   <div className="grid gap-3">
                     <Label htmlFor="company_name">Company Name</Label>
                     <Input
@@ -142,7 +174,7 @@ const UpdateCompany = () => {
                 </div>
               </div>
               <div className="grid gap-6">
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-10">
                   <div className="grid gap-3">
                     <Label htmlFor="email">Email Address</Label>
                     <Input
@@ -170,7 +202,7 @@ const UpdateCompany = () => {
                 </div>
               </div>
               <div className="grid gap-6">
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-10">
                   <div className="grid gap-3">
                     <Label htmlFor="company_website">Company Website</Label>
                     <Input
