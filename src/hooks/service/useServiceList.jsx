@@ -5,7 +5,8 @@ const useServiceList = (currentPage) => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchList = useCallback(async () => {
+  const fetchServiceList = useCallback(async () => {
+    setLoading(true);
     try {
       var response = await ServiceService.getPaginatedList(currentPage);
       setServices(response.result.data);
@@ -17,7 +18,17 @@ const useServiceList = (currentPage) => {
     }
   }, [currentPage]);
 
-  return { services, loading, fetchList };
+  const fetchServiceSelectList = async () => {
+    try {
+      var response = await ServiceService.getSelectList();
+      console.log("Get select list", response.result);
+      setServices(response.result);
+    } catch (error) {
+      console.log("Error fetching select list: ", error);
+    }
+  };
+
+  return { services, loading, fetchServiceSelectList, fetchServiceList };
 };
 
 export default useServiceList;

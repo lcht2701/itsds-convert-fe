@@ -26,16 +26,19 @@ import {
 } from "@/components/ui/select";
 import UserService from "@/servers/UserService";
 import { Spinner } from "@/components/ui/spinner";
+import useServiceList from "@/hooks/service/useServiceList";
+import useUserList from "@/hooks/user/useUserList";
+import useTicketSolution from "@/hooks/ticketSolution/useTicketSolution";
 
 const UpdateTicketSolution = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const [serviceList, setServiceList] = useState([]);
-  const [ownerList, setOwnerList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { services, fetchServiceSelectList } = useServiceList();
+  const { users, fetchOwnerSelectList } = useUserList();
+  const { ticketSolution, loading, updateTicketSolution } =
+    useTicketSolution(id);
 
   const schema = yup.object().shape({
-    title: yup.string().required("Name is required"),
+    title: yup.string().required("Title is required"),
     content: yup.string().nullable(),
     service_id: yup.number().required("Service is required"),
     owner_id: yup.number().required("Owner is required"),
@@ -59,56 +62,21 @@ const UpdateTicketSolution = () => {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
-    try {
-      await TicketSolutionService.update(id, data);
-      navigate(-1);
-    } catch (error) {
-      console.error("Update failed:", error);
-    }
+    updateTicketSolution(data);
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        var response = await TicketSolutionService.getDetail(id);
-        var result = response.result;
-        setValue("title", result.title);
-        setValue("content", result.content);
-        setValue("service_id", result.service?.id);
-        setValue("owner_id", result.owner?.id);
-        setValue("keyword", result.keyword);
-      } catch (error) {
-        console.log("Error fetching data: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    const fetchServiceList = async () => {
-      try {
-        var response = await ServiceService.getSelectList();
-        console.log("Get select list", response.result);
-        setServiceList(response.result);
-      } catch (error) {
-        console.log("Error fetching select list: ", error);
-      }
-    };
+    fetchOwnerSelectList();
+    fetchServiceSelectList();
 
-    const fetchOwnerList = async () => {
-      try {
-        var response = await UserService.getOwnerList();
-        console.log("Get select list", response.result);
-        setOwnerList(response.result);
-      } catch (error) {
-        console.log("Error fetching select list: ", error);
-      }
-    };
-
-    fetchOwnerList();
-    fetchServiceList();
-    fetchData();
-  }, []);
+    if (ticketSolution) {
+      setValue("title", ticketSolution.title);
+      setValue("content", ticketSolution.content);
+      setValue("service_id", ticketSolution.service?.id);
+      setValue("owner_id", ticketSolution.owner?.id);
+      setValue("keyword", ticketSolution.keyword);
+    }
+  }, [ticketSolution]);
 
   if (loading) return <Spinner size="medium" />;
 
@@ -156,9 +124,9 @@ const UpdateTicketSolution = () => {
                             <SelectValue placeholder="Select a service" />
                           </SelectTrigger>
                           <SelectContent>
-                            {serviceList?.map((service) => (
+                            {services?.map((service, key) => (
                               <SelectItem
-                                key={service.id}
+                                key={key}
                                 value={service.id.toString()}
                               >
                                 {service.name}
@@ -201,12 +169,9 @@ const UpdateTicketSolution = () => {
                             <SelectValue placeholder="Select a owner" />
                           </SelectTrigger>
                           <SelectContent>
-                            {ownerList?.map((owner) => (
-                              <SelectItem
-                                key={owner.id}
-                                value={owner.id.toString()}
-                              >
-                                {owner.name}
+                            {users?.map((user, key) => (
+                              <SelectItem key={key} value={user.id.toString()}>
+                                {user.name}
                               </SelectItem>
                             ))}
                           </SelectContent>

@@ -29,7 +29,7 @@ const useService = (id) => {
     console.log(data);
     try {
       await ServiceService.add(data);
-      navigate("/manager/service");
+      navigate(-1);
     } catch (error) {
       console.error("Add failed:", error);
     }
@@ -38,7 +38,7 @@ const useService = (id) => {
   const updateService = async (data) => {
     try {
       await ServiceService.update(id, data);
-      navigate("/manager/service");
+      navigate(-1);
     } catch (error) {
       console.error("Update failed:", error);
     }

@@ -40,7 +40,7 @@ const ServiceList = () => {
   const navigate = useNavigate();
   const { currentPage, paginationData, setPaginationData, onChangePage } =
     usePaginate();
-  const { services, loading, fetchList } = useServiceList(currentPage);
+  const { services, loading, fetchServiceList } = useServiceList(currentPage);
   const { activeDialogId, handleOpenDialog, handleCloseDialog } = useDialog();
 
   const handleOpenUpdateService = (id) => {
@@ -51,7 +51,7 @@ const ServiceList = () => {
     try {
       await ServiceService.delete(id).then(() => {
         handleCloseDialog();
-        fetchList();
+        fetchServiceList();
       });
     } catch (error) {
       console.log(error);
@@ -59,8 +59,8 @@ const ServiceList = () => {
   };
 
   useEffect(() => {
-    fetchList().then(setPaginationData);
-  }, [currentPage, fetchList, setPaginationData]);
+    fetchServiceList().then(setPaginationData);
+  }, [currentPage, fetchServiceList, setPaginationData]);
 
   return (
     <>

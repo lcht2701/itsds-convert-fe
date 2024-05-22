@@ -46,7 +46,7 @@ const UpdateCategory = () => {
       setValue("name", category.name);
       setValue("description", category.description);
     }
-  }, [category, setValue]);
+  }, [category]);
 
   if (loading) return <Spinner size="medium" />;
 

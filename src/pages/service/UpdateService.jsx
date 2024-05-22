@@ -52,13 +52,12 @@ const UpdateService = () => {
   };
 
   useEffect(() => {
+    fetchCategorySelectList();
     if (service) {
       setValue("name", service.name);
       setValue("description", service.description);
       setValue("category_id", service.category?.id);
     }
-
-    fetchCategorySelectList();
   }, [service]);
 
   if (loading) return <Spinner size="medium" />;

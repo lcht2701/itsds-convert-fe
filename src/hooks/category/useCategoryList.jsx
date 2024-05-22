@@ -19,15 +19,12 @@ const useCategoryList = (currentPage) => {
   }, [currentPage]);
 
   const fetchCategorySelectList = async () => {
-    setLoading(true);
     try {
       var response = await CategoryService.getSelectList();
       console.log("Get select list", response.result);
       setCategories(response.result);
     } catch (error) {
       console.log("Error fetching select list: ", error);
-    } finally {
-      setLoading(false);
     }
   };
 

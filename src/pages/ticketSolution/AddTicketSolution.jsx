@@ -9,14 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import DetailNavbar from "@/components/custom/DetailNavbar";
-import ServiceService from "@/servers/ServiceService";
-import { useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorMessage from "@/components/custom/ErrorMessage";
-import { useEffect, useState } from "react";
-import TicketSolutionService from "@/servers/TicketSolutionService";
+import { useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -24,15 +21,17 @@ import {
   SelectValue,
   SelectTrigger,
 } from "@/components/ui/select";
-import UserService from "@/servers/UserService";
+import useServiceList from "@/hooks/service/useServiceList";
+import useUserList from "@/hooks/user/useUserList";
+import useTicketSolution from "@/hooks/ticketSolution/useTicketSolution";
 
 const AddTicketSolution = () => {
-  const navigate = useNavigate();
-  const [serviceList, setServiceList] = useState([]);
-  const [ownerList, setOwnerList] = useState([]);
+  const { services, fetchServiceSelectList } = useServiceList();
+  const { users, fetchOwnerSelectList } = useUserList();
+  const { addTicketSolution } = useTicketSolution();
 
   const schema = yup.object().shape({
-    title: yup.string().required("Name is required"),
+    title: yup.string().required("Title is required"),
     content: yup.string().nullable(),
     service_id: yup.number().required("Service is required"),
     owner_id: yup.number().required("Owner is required"),
@@ -55,38 +54,12 @@ const AddTicketSolution = () => {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
-    try {
-      await TicketSolutionService.add(data);
-      navigate(-1);
-    } catch (error) {
-      console.error("Add failed:", error);
-    }
+    addTicketSolution(data);
   };
 
   useEffect(() => {
-    const fetchServiceList = async () => {
-      try {
-        var response = await ServiceService.getSelectList();
-        console.log("Get select list", response.result);
-        setServiceList(response.result);
-      } catch (error) {
-        console.log("Error fetching select list: ", error);
-      }
-    };
-
-    const fetchOwnerList = async () => {
-      try {
-        var response = await UserService.getOwnerList();
-        console.log("Get select list", response.result);
-        setOwnerList(response.result);
-      } catch (error) {
-        console.log("Error fetching select list: ", error);
-      }
-    };
-
-    fetchServiceList();
-    fetchOwnerList();
+    fetchServiceSelectList();
+    fetchOwnerSelectList();
   }, []);
 
   return (
@@ -130,9 +103,9 @@ const AddTicketSolution = () => {
                             <SelectValue placeholder="Select a service" />
                           </SelectTrigger>
                           <SelectContent>
-                            {serviceList?.map((service) => (
+                            {services?.map((service, key) => (
                               <SelectItem
-                                key={service.id}
+                                key={key}
                                 value={service.id.toString()}
                               >
                                 {service.name}
@@ -172,12 +145,9 @@ const AddTicketSolution = () => {
                             <SelectValue placeholder="Select a owner" />
                           </SelectTrigger>
                           <SelectContent>
-                            {ownerList?.map((owner) => (
-                              <SelectItem
-                                key={owner.id}
-                                value={owner.id.toString()}
-                              >
-                                {owner.name}
+                            {users?.map((user, key) => (
+                              <SelectItem key={key} value={user.id.toString()}>
+                                {user.name}
                               </SelectItem>
                             ))}
                           </SelectContent>

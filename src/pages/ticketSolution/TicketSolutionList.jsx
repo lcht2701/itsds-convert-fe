@@ -1,5 +1,5 @@
 import React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -20,40 +20,25 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Spinner } from "@/components/ui/spinner";
 import CustomPagination from "@/components/custom/CustomPagination";
 import { useNavigate } from "react-router-dom";
-import TicketSolutionService from "@/servers/TicketSolutionService";
 import ListNavBar from "@/components/custom/ListNav";
 import { UserRoleToEnum } from "@/utils/EnumObject";
+import usePaginate from "@/hooks/usePaginate";
+import useTicketSolutionList from "@/hooks/ticketSolution/useTicketSolutionList";
 
 const TicketSolutionList = () => {
-  const [ticketSolutions, setTicketSolutions] = useState([]);
-  const [pagination, setPagination] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
-
-  const onChangePage = (pageNumber) => {
-    if (pageNumber !== null) setCurrentPage(pageNumber);
-  };
+  const { currentPage, paginationData, setPaginationData, onChangePage } =
+    usePaginate();
+  const { ticketSolutions, loading, fetchTicketSolutionList } =
+    useTicketSolutionList(currentPage);
 
   const handleOpenDetailPage = (id) => {
     navigate(`${id}`);
   };
 
-  const fetchData = useCallback(async () => {
-    try {
-      var response = await TicketSolutionService.getPaginatedList(currentPage);
-      setTicketSolutions(response.result.data);
-      setPagination(response.result.pagination);
-    } catch (error) {
-      console.log("Error fetching data: ", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage]);
-
   useEffect(() => {
-    fetchData();
-  }, [currentPage, fetchData]);
+    fetchTicketSolutionList().then(setPaginationData);
+  }, [currentPage, fetchTicketSolutionList, setPaginationData]);
 
   return (
     <>
@@ -146,7 +131,7 @@ const TicketSolutionList = () => {
               )}
               <CardFooter>
                 <CustomPagination
-                  pagination={pagination}
+                  pagination={paginationData}
                   onChangePage={onChangePage}
                 />
               </CardFooter>

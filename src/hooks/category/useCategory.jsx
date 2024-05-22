@@ -29,7 +29,7 @@ const useCategory = (id) => {
     console.log(data);
     try {
       await CategoryService.add(data);
-      navigate("/manager/category");
+      navigate(-1);
     } catch (error) {
       console.error("Add failed:", error);
     }
@@ -38,7 +38,7 @@ const useCategory = (id) => {
   const updateCategory = async (data) => {
     try {
       await CategoryService.update(id, data);
-      navigate("/manager/category");
+      navigate(-1);
     } catch (error) {
       console.error("Update failed:", error);
     }
