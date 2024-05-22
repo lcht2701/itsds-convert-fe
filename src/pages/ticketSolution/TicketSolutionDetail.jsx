@@ -38,7 +38,7 @@ const TicketSolutionDetail = () => {
   const { ticketSolution, loading, approve, reject } = useTicketSolution(id);
   const { comments, addComment, deleteComment, isOpenComment, setOpenComment } =
     useComment(id);
-  const { activeDialogId, handleCloseDialog, handleOpenDialog } = useDialog();
+  const { dialog, handleCloseDialog, handleOpenDialog } = useDialog();
   const route = RouteByRole(user.role);
   const navigate = useNavigate();
   const schema = yup.object().shape({
@@ -261,7 +261,7 @@ const TicketSolutionDetail = () => {
         </Card>
       </div>
       <ConfirmDialog
-        isOpen={activeDialogId}
+        isOpen={dialog}
         content="Do you want to delete this solution?"
         onCancel={handleCloseDialog}
         onConfirm={() => {

@@ -12,7 +12,7 @@ class CompanyAddressService {
     }
   }
 
-  async get(companyId, page = 1) {
+  async getPaginatedList(companyId, page = 1) {
     try {
       const params = { page: page };
       const response = await apiClient.get(

@@ -41,7 +41,7 @@ const ServiceList = () => {
   const { currentPage, paginationData, setPaginationData, onChangePage } =
     usePaginate();
   const { services, loading, fetchServiceList } = useServiceList(currentPage);
-  const { activeDialogId, handleOpenDialog, handleCloseDialog } = useDialog();
+  const { dialog, handleOpenDialog, handleCloseDialog } = useDialog();
 
   const handleOpenUpdateService = (id) => {
     navigate(`/manager/service/update/${id}`);
@@ -170,11 +170,11 @@ const ServiceList = () => {
         </Tabs>
 
         <ConfirmDialog
-          isOpen={activeDialogId !== null}
+          isOpen={dialog !== null}
           content="Do you want to delete this service?"
           onCancel={handleCloseDialog}
           onConfirm={() => {
-            handleConfirmDelete(activeDialogId);
+            handleConfirmDelete(dialog);
           }}
         />
       </main>

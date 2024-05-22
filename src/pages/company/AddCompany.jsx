@@ -8,15 +8,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import DetailNavbar from "@/components/custom/DetailNavbar";
-import CompanyService from "@/servers/CompanyService";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorMessage from "@/components/custom/ErrorMessage";
+import useCompany from "@/hooks/company/useCompany";
 
 const AddCompany = () => {
-  const navigate = useNavigate();
+  const { addCompany } = useCompany();
+
   const schema = yup.object().shape({
     company_name: yup
       .string()
@@ -46,13 +46,7 @@ const AddCompany = () => {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
-    try {
-      await CompanyService.add(data);
-      navigate("/manager/company");
-    } catch (error) {
-      console.error("Add failed:", error);
-    }
+    addCompany(data);
   };
 
   return (

@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -14,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MoreHorizontal, PlusCircle } from "lucide-react";
 import {
   DropdownMenu,
@@ -27,27 +28,43 @@ import CompanyMemberService from "@/servers/CompanyMemberService";
 import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
 import { Spinner } from "@/components/ui/spinner";
 import { CompanyMemberDialog } from "./CompanyMemberDialog";
+import useCompanyMemberList from "@/hooks/companyMember/useCompanyMemberList";
+import usePaginate from "@/hooks/usePaginate";
+import CustomPagination from "@/components/custom/CustomPagination";
+import useDialog from "@/hooks/useDialog";
 
-function CompanyMemberTab({ companyMembers, companyId, onReload }) {
-  const [loading, setLoading] = useState(false);
-  const [createDialog, setCreateDialog] = useState(false);
-  const [updateDialogId, setUpdateDialogId] = useState(null);
-  const [deleteDialogId, setDeleteDialogId] = useState(null);
+function CompanyMemberTab({ companyId }) {
+  const { currentPage, paginationData, setPaginationData, onChangePage } =
+    usePaginate();
+  const { companyMembers, loading, fetchCompanyMemberList } =
+    useCompanyMemberList(companyId, currentPage);
 
-  // Handle Delete Address
+  const createDialog = useDialog();
+  const updateDialog = useDialog();
+  const deleteDialog = useDialog();
+
+  const handleReload = () => {
+    fetchCompanyMemberList().then(setPaginationData);
+  };
+
   const handleConfirmDelete = async (id) => {
     try {
-      setLoading(true);
       await CompanyMemberService.delete(companyId, id).then(() => {
-        setDeleteDialogId(null);
-        onReload();
+        deleteDialog.handleCloseDialog();
+        handleReload();
       });
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (companyId) {
+      handleReload();
+    }
+  }, [currentPage, fetchCompanyMemberList, setPaginationData]);
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center">
@@ -60,7 +77,7 @@ function CompanyMemberTab({ companyMembers, companyId, onReload }) {
             type="button"
             size="sm"
             className="bg-blue-500 text-white gap-1"
-            onClick={() => setCreateDialog(true)}
+            onClick={() => createDialog.handleOpenDialog(companyId)}
           >
             <PlusCircle className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
@@ -120,12 +137,16 @@ function CompanyMemberTab({ companyMembers, companyId, onReload }) {
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuItem
-                            onClick={() => setUpdateDialogId(member.id)}
+                            onClick={() =>
+                              updateDialog.handleOpenDialog(member.id)
+                            }
                           >
                             Update
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => setDeleteDialogId(member.id)}
+                            onClick={() =>
+                              deleteDialog.handleOpenDialog(member.id)
+                            }
                           >
                             Delete
                           </DropdownMenuItem>
@@ -141,23 +162,28 @@ function CompanyMemberTab({ companyMembers, companyId, onReload }) {
           )}
         </CardContent>
       )}
-
+      <CardFooter>
+        <CustomPagination
+          pagination={paginationData}
+          onChangePage={onChangePage}
+        />
+      </CardFooter>
       <CompanyMemberDialog
-        isOpen={createDialog || updateDialogId !== null}
+        isOpen={createDialog.dialog !== null || updateDialog.dialog !== null}
         onCancel={() => {
-          setCreateDialog(false);
-          setUpdateDialogId(null);
+          createDialog.handleCloseDialog();
+          updateDialog.handleCloseDialog();
         }}
         companyId={companyId}
-        onReload={onReload}
-        updateMemberId={updateDialogId}
+        updateMemberId={updateDialog.dialog}
+        onReload={() => handleReload()}
       />
       <ConfirmDialog
-        isOpen={deleteDialogId !== null}
+        isOpen={deleteDialog.dialog !== null}
         content="Do you want to delete this member?"
-        onCancel={() => setDeleteDialogId(null)}
+        onCancel={() => deleteDialog.handleCloseDialog()}
         onConfirm={() => {
-          handleConfirmDelete(deleteDialogId);
+          handleConfirmDelete(deleteDialog.dialog);
         }}
       />
     </Card>

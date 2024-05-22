@@ -20,8 +20,6 @@ const CompanyDetail = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const [company, setCompany] = useState({});
-  const [companyAddresses, setCompanyAddresses] = useState([]);
-  const [companyMembers, setCompanyMembers] = useState([]);
   const [isOpen, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const route = RouteByRole(user.role);
@@ -37,26 +35,6 @@ const CompanyDetail = () => {
       console.log("Error fetching data: ", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchCompanyMembers = async () => {
-    try {
-      var response = await CompanyMemberService.get(id);
-      var result = response.result.data;
-      setCompanyMembers(result);
-    } catch (error) {
-      console.log("Error fetching data: ", error);
-    }
-  };
-
-  const fetchCompanyAddresses = async () => {
-    try {
-      var response = await CompanyAddressService.get(id);
-      var result = response.result;
-      setCompanyAddresses(result);
-    } catch (error) {
-      console.log("Error fetching data: ", error);
     }
   };
 
@@ -85,8 +63,6 @@ const CompanyDetail = () => {
   };
 
   useEffect(() => {
-    fetchCompanyAddresses();
-    fetchCompanyMembers();
     fetchData();
   }, []);
 
@@ -139,18 +115,10 @@ const CompanyDetail = () => {
             <TabsTrigger value="member">Members</TabsTrigger>
           </TabsList>
           <TabsContent value="address">
-            <CompanyAddressTab
-              companyId={company.id}
-              companyAddresses={companyAddresses}
-              onReload={() => fetchCompanyAddresses()}
-            />
+            <CompanyAddressTab companyId={company.id} />
           </TabsContent>
           <TabsContent value="member">
-            <CompanyMemberTab
-              companyId={company.id}
-              companyMembers={companyMembers}
-              onReload={() => fetchCompanyMembers()}
-            />
+            <CompanyMemberTab companyId={company.id} />
           </TabsContent>
         </Tabs>
       </div>

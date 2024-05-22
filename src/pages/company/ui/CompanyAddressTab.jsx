@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -27,27 +28,41 @@ import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
 import CompanyAddressService from "@/servers/CompanyAddressService";
 import { Spinner } from "@/components/ui/spinner";
 import { CompanyAddressDialog } from "./CompanyAddressDialog";
+import useCompanyAddressList from "@/hooks/companyAddress/useCompanyAddressList";
+import usePaginate from "@/hooks/usePaginate";
+import CustomPagination from "@/components/custom/CustomPagination";
+import useDialog from "@/hooks/useDialog";
 
-function CompanyAddressTab({ companyAddresses, companyId, onReload }) {
-  const [loading, setLoading] = useState(false);
-  const [createDialog, setCreateDialog] = useState(false);
-  const [updateDialogId, setUpdateDialogId] = useState(null);
-  const [deleteDialogId, setDeleteDialogId] = useState(null);
+function CompanyAddressTab({ companyId }) {
+  const { currentPage, paginationData, setPaginationData, onChangePage } =
+    usePaginate();
+  const { companyAddresses, loading, fetchCompanyAddressList } =
+    useCompanyAddressList(companyId, currentPage);
+  const createDialog = useDialog();
+  const updateDialog = useDialog();
+  const deleteDialog = useDialog();
 
-  // Handle Delete Address
+  const handleReload = () => {
+    fetchCompanyAddressList().then(setPaginationData);
+  };
+
   const handleConfirmDelete = async (id) => {
     try {
-      setLoading(true);
       await CompanyAddressService.delete(companyId, id).then(() => {
-        setDeleteDialogId(null);
-        onReload();
+        deleteDialog.handleCloseDialog();
+        handleReload();
       });
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (companyId) {
+      handleReload();
+    }
+  }, [currentPage, fetchCompanyAddressList, setPaginationData]);
 
   return (
     <Card>
@@ -61,7 +76,7 @@ function CompanyAddressTab({ companyAddresses, companyId, onReload }) {
             type="button"
             size="sm"
             className="bg-blue-500 text-white gap-1"
-            onClick={() => setCreateDialog(true)}
+            onClick={() => createDialog.handleOpenDialog(companyId)}
           >
             <PlusCircle className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
@@ -118,12 +133,16 @@ function CompanyAddressTab({ companyAddresses, companyId, onReload }) {
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuItem
-                            onClick={() => setUpdateDialogId(address.id)}
+                            onClick={() =>
+                              updateDialog.handleOpenDialog(address.id)
+                            }
                           >
                             Update
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => setDeleteDialogId(address.id)}
+                            onClick={() =>
+                              deleteDialog.handleOpenDialog(address.id)
+                            }
                           >
                             Delete
                           </DropdownMenuItem>
@@ -139,23 +158,28 @@ function CompanyAddressTab({ companyAddresses, companyId, onReload }) {
           )}
         </CardContent>
       )}
-
+      <CardFooter>
+        <CustomPagination
+          pagination={paginationData}
+          onChangePage={onChangePage}
+        />
+      </CardFooter>
       <CompanyAddressDialog
-        isOpen={createDialog || updateDialogId !== null}
+        isOpen={createDialog.dialog !== null || updateDialog.dialog !== null}
         onCancel={() => {
-          setCreateDialog(false);
-          setUpdateDialogId(null);
+          createDialog.handleCloseDialog();
+          updateDialog.handleCloseDialog();
         }}
         companyId={companyId}
-        onReload={onReload}
-        updateAddressId={updateDialogId}
+        updateAddressId={updateDialog.dialog}
+        onReload={() => handleReload()}
       />
       <ConfirmDialog
-        isOpen={deleteDialogId !== null}
+        isOpen={deleteDialog.dialog !== null}
         content="Do you want to delete this address?"
-        onCancel={() => setDeleteDialogId(null)}
+        onCancel={() => deleteDialog.handleCloseDialog()}
         onConfirm={() => {
-          handleConfirmDelete(deleteDialogId);
+          handleConfirmDelete(deleteDialog.dialog);
         }}
       />
     </Card>

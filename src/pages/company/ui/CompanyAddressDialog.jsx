@@ -37,6 +37,7 @@ export function CompanyAddressDialog({
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -59,7 +60,7 @@ export function CompanyAddressDialog({
     };
 
     fetchData(updateAddressId);
-  }, [updateAddressId, companyId, setValue]);
+  }, [updateAddressId, companyId, setValue, reset]);
 
   const onSubmit = async (data) => {
     setLoading(true);

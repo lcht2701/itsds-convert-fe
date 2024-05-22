@@ -1,6 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
-import { MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -18,46 +16,29 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import CompanyService from "@/servers/CompanyService";
 import { Spinner } from "@/components/ui/spinner";
 import CustomPagination from "@/components/custom/CustomPagination";
 import { useNavigate } from "react-router-dom";
-import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
 import ListNavBar from "@/components/custom/ListNav";
 import { UserRoleToEnum } from "@/utils/EnumObject";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import useCompanyList from "@/hooks/company/useCompanyList";
+import usePaginate from "@/hooks/usePaginate";
 
 const CompanyList = () => {
-  const [companies, setCompanies] = useState([]);
-  const [paginationData, setPaginationData] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
-
-  const fetchData = useCallback(async () => {
-    try {
-      var response = await CompanyService.getPaginatedList(currentPage);
-      setCompanies(response.result.data);
-      setPaginationData(response.result.pagination);
-    } catch (error) {
-      console.log("Error fetching data: ", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage]);
+  const { currentPage, paginationData, setPaginationData, onChangePage } =
+    usePaginate();
+  const { companies, loading, fetchCompanyList } = useCompanyList(currentPage);
 
   const handleOpenDetailPage = (id) => {
     navigate(`${id}`);
   };
 
-  const onChangePage = (pageNumber) => {
-    if (pageNumber !== null) setCurrentPage(pageNumber);
-  };
-
   useEffect(() => {
-    fetchData();
-  }, [currentPage, fetchData]);
+    fetchCompanyList().then(setPaginationData);
+  }, [currentPage, fetchCompanyList, setPaginationData]);
 
   return (
     <>

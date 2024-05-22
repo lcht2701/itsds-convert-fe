@@ -7,23 +7,20 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import DetailNavbar from "@/components/custom/DetailNavbar";
-import { useEffect, useState } from "react";
-import CompanyService from "@/servers/CompanyService";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorMessage from "@/components/custom/ErrorMessage";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
+import useCompany from "@/hooks/company/useCompany";
 
 const UpdateCompany = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const { company, loading, updateCompany } = useCompany(id);
 
   const schema = yup.object().shape({
     company_name: yup
@@ -57,37 +54,20 @@ const UpdateCompany = () => {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
-    try {
-      await CompanyService.update(id, data);
-      navigate("/manager/company");
-    } catch (error) {
-      console.error("Update failed:", error);
-    }
+    updateCompany(data);
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        var response = await CompanyService.getDetail(id);
-        var result = response.result;
-        setValue("company_name", result.company_name);
-        setValue("tax_code", result.tax_code);
-        setValue("phone", result.phone);
-        setValue("email", result.email);
-        setValue("field_of_business", result.field_of_business);
-        setValue("company_website", result.company_website);
-        setValue("is_active", result.is_active);
-      } catch (error) {
-        console.log("Error fetching data: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+    if (company) {
+      setValue("company_name", company.company_name);
+      setValue("tax_code", company.tax_code);
+      setValue("phone", company.phone);
+      setValue("email", company.email);
+      setValue("field_of_business", company.field_of_business);
+      setValue("company_website", company.company_website);
+      setValue("is_active", company.is_active);
+    }
+  }, [company]);
 
   if (loading) return <Spinner size="medium" />;
 

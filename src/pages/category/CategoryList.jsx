@@ -42,7 +42,7 @@ const CategoryList = () => {
     usePaginate();
   const { categories, loading, fetchCategoryList } =
     useCategoryList(currentPage);
-  const { activeDialogId, handleOpenDialog, handleCloseDialog } = useDialog();
+  const { dialog, handleOpenDialog, handleCloseDialog } = useDialog();
 
   const handleOpenUpdateCategory = (id) => {
     navigate(`/manager/category/update/${id}`);
@@ -167,11 +167,11 @@ const CategoryList = () => {
         </Tabs>
 
         <ConfirmDialog
-          isOpen={activeDialogId !== null}
+          isOpen={dialog !== null}
           content="Do you want to delete this category?"
           onCancel={handleCloseDialog}
           onConfirm={() => {
-            handleConfirmDelete(activeDialogId);
+            handleConfirmDelete(dialog);
           }}
         />
       </main>

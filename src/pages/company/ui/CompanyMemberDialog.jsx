@@ -7,7 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -24,6 +23,8 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import CompanyAddressService from "@/servers/CompanyAddressService";
+import useCompanyMemberList from "@/hooks/companyMember/useCompanyMemberList";
+import useCompanyAddressList from "@/hooks/companyAddress/useCompanyAddressList";
 
 export function CompanyMemberDialog({
   isOpen,
@@ -32,6 +33,7 @@ export function CompanyMemberDialog({
   onReload,
   updateMemberId,
 }) {
+  const {} = useCompanyAddressList();
   const [loading, setLoading] = useState(false);
   const [members, setMembers] = useState([]);
   const [addresses, setAddresses] = useState([]);
@@ -81,8 +83,8 @@ export function CompanyMemberDialog({
   const fetchAddresses = async (id) => {
     try {
       if (id !== null) {
-        const response = await CompanyAddressService.get(id);
-        const result = response.result;
+        const response = await CompanyAddressService.getPaginatedList(id);
+        const result = response.result.data;
         setAddresses(result);
       }
     } catch (error) {

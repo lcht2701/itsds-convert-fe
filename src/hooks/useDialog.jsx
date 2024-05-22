@@ -1,18 +1,18 @@
 import { useState } from "react";
 
 const useDialog = () => {
-  const [activeDialogId, setActiveDialogId] = useState(null);
+  const [dialog, setDialog] = useState(null);
 
   const handleCloseDialog = () => {
-    setActiveDialogId(null);
+    setDialog(null);
   };
 
   const handleOpenDialog = (id) => {
-    setActiveDialogId(id);
+    setDialog(id);
   };
 
   return {
-    activeDialogId,
+    dialog,
     handleCloseDialog,
     handleOpenDialog,
   };
