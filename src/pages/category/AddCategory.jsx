@@ -9,16 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import DetailNavbar from "@/components/custom/DetailNavbar";
-import CategoryService from "@/servers/CategoryService";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { handleNullInputField } from "@/utils/HandleNullInputField";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorMessage from "@/components/custom/ErrorMessage";
+import useCategory from "@/hooks/category/useCategory";
 
 const AddCategory = () => {
-  const navigate = useNavigate();
+  const { addCategory } = useCategory();
   const schema = yup.object().shape({
     name: yup.string().required("Name is required"),
     description: yup.string().nullable(),
@@ -33,14 +31,7 @@ const AddCategory = () => {
   });
 
   const onSubmit = async (data) => {
-    data = handleNullInputField(data);
-    console.log(data);
-    try {
-      await CategoryService.add(data);
-      navigate("/manager/category");
-    } catch (error) {
-      console.error("Add failed:", error);
-    }
+    addCategory(data);
   };
 
   return (

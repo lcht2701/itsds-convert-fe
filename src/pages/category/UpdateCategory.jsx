@@ -18,11 +18,11 @@ import { handleNullInputField } from "@/utils/HandleNullInputField";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorMessage from "@/components/custom/ErrorMessage";
+import useCategory from "@/hooks/category/useCategory";
 
 const UpdateCategory = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const { category, loading, updateCategory } = useCategory(id);
 
   const schema = yup.object().shape({
     name: yup.string().required("Name is required"),
@@ -38,34 +38,16 @@ const UpdateCategory = () => {
     resolver: yupResolver(schema),
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        var response = await CategoryService.getDetail(id);
-        var result = response.result;
-        setValue("name", result.name);
-        setValue("description", result.description);
-      } catch (error) {
-        console.log("Error fetching data: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   const onSubmit = async (data) => {
-    data = handleNullInputField(data);
-    console.log(data);
-    try {
-      await CategoryService.update(id, data);
-      navigate("/manager/category");
-    } catch (error) {
-      console.error("Update failed:", error);
-    }
+    updateCategory(data);
   };
+
+  useEffect(() => {
+    if (category) {
+      setValue("name", category.name);
+      setValue("description", category.description);
+    }
+  }, [category, setValue]);
 
   if (loading) return <Spinner size="medium" />;
 
