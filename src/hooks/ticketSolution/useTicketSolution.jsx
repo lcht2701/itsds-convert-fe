@@ -7,23 +7,17 @@ const useTicketSolution = (id) => {
   const [ticketSolution, setTicketSolution] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (id) {
-      const fetchTicketSolution = async () => {
-        setLoading(true);
-        try {
-          const response = await TicketSolutionService.getDetail(id);
-          setTicketSolution(response.result);
-        } catch (error) {
-          console.error("Error fetching ticket solution:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchTicketSolution();
+  const fetchTicketSolution = async () => {
+    setLoading(true);
+    try {
+      const response = await TicketSolutionService.getDetail(id);
+      setTicketSolution(response.result);
+    } catch (error) {
+      console.error("Error fetching ticket solution:", error);
+    } finally {
+      setLoading(false);
     }
-  }, [id]);
+  };
 
   const addTicketSolution = async (data) => {
     console.log(data);
@@ -45,7 +39,40 @@ const useTicketSolution = (id) => {
     }
   };
 
-  return { ticketSolution, loading, addTicketSolution, updateTicketSolution };
+  const approve = async () => {
+    try {
+      await TicketSolutionService.approve(id).then(() => {
+        fetchTicketSolution();
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const reject = async () => {
+    try {
+      await TicketSolutionService.reject(id).then(() => {
+        fetchTicketSolution();
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchTicketSolution();
+    }
+  }, [id]);
+
+  return {
+    ticketSolution,
+    loading,
+    addTicketSolution,
+    updateTicketSolution,
+    approve,
+    reject,
+  };
 };
 
 export default useTicketSolution;
