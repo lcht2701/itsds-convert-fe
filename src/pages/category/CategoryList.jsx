@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,7 +40,8 @@ const CategoryList = () => {
   const navigate = useNavigate();
   const { currentPage, paginationData, setPaginationData, onChangePage } =
     usePaginate();
-  const { categories, loading, fetchList } = useCategoryList(currentPage);
+  const { categories, loading, fetchCategoryList } =
+    useCategoryList(currentPage);
   const { activeDialogId, handleOpenDialog, handleCloseDialog } = useDialog();
 
   const handleOpenUpdateCategory = (id) => {
@@ -51,7 +52,7 @@ const CategoryList = () => {
     try {
       await CategoryService.delete(id).then(() => {
         handleCloseDialog();
-        fetchList();
+        fetchCategoryList();
       });
     } catch (error) {
       console.log(error);
@@ -59,8 +60,8 @@ const CategoryList = () => {
   };
 
   useEffect(() => {
-    fetchList().then(setPaginationData);
-  }, [currentPage, fetchList, setPaginationData]);
+    fetchCategoryList().then(setPaginationData);
+  }, [currentPage, fetchCategoryList, setPaginationData]);
 
   return (
     <>

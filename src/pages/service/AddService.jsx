@@ -9,15 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import DetailNavbar from "@/components/custom/DetailNavbar";
-import ServiceService from "@/servers/ServiceService";
-import { useNavigate } from "react-router-dom";
-import { handleNullInputField } from "@/utils/HandleNullInputField";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorMessage from "@/components/custom/ErrorMessage";
-import { useEffect, useState } from "react";
-import CategoryService from "@/servers/CategoryService";
+import { useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -25,10 +21,13 @@ import {
   SelectValue,
   SelectTrigger,
 } from "@/components/ui/select";
+import useService from "@/hooks/service/useService";
+import useCategoryList from "@/hooks/category/useCategoryList";
 
 const AddService = () => {
-  const navigate = useNavigate();
-  const [categoryList, setCategoryList] = useState([]);
+  const { categories, fetchCategorySelectList } = useCategoryList();
+  const { addService } = useService();
+
   const schema = yup.object().shape({
     name: yup.string().required("Name is required"),
     description: yup.string().nullable(),
@@ -44,30 +43,13 @@ const AddService = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data) => {
-    data = handleNullInputField(data);
-    console.log(data);
-    try {
-      await ServiceService.add(data);
-      navigate("/manager/service");
-    } catch (error) {
-      console.error("Add failed:", error);
-    }
-  };
-
   useEffect(() => {
-    const fetchCategoryList = async () => {
-      try {
-        var response = await CategoryService.getSelectList();
-        console.log("Get select list", response.result);
-        setCategoryList(response.result);
-      } catch (error) {
-        console.log("Error fetching select list: ", error);
-      }
-    };
-
-    fetchCategoryList();
+    fetchCategorySelectList();
   }, []);
+
+  const onSubmit = async (data) => {
+    addService(data);
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -119,9 +101,9 @@ const AddService = () => {
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>
                         <SelectContent>
-                          {categoryList?.map((category) => (
+                          {categories?.map((category, key) => (
                             <SelectItem
-                              key={category.id}
+                              key={key}
                               value={category.id.toString()}
                             >
                               {category.name}

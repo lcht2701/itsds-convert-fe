@@ -9,16 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import DetailNavbar from "@/components/custom/DetailNavbar";
-import { useEffect, useState } from "react";
-import CategoryService from "@/servers/CategoryService";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { Controller, useForm } from "react-hook-form";
-import { handleNullInputField } from "@/utils/HandleNullInputField";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorMessage from "@/components/custom/ErrorMessage";
-import ServiceService from "@/servers/ServiceService";
 import {
   Select,
   SelectContent,
@@ -26,12 +23,13 @@ import {
   SelectValue,
   SelectTrigger,
 } from "@/components/ui/select";
+import useCategoryList from "@/hooks/category/useCategoryList";
+import useService from "@/hooks/service/useService";
 
 const UpdateService = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const [categoryList, setCategoryList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { categories, fetchCategorySelectList } = useCategoryList();
+  const { service, loading, updateService } = useService(id);
 
   const schema = yup.object().shape({
     name: yup.string().required("Name is required"),
@@ -50,44 +48,18 @@ const UpdateService = () => {
   });
 
   const onSubmit = async (data) => {
-    data = handleNullInputField(data);
-    console.log(data);
-    try {
-      await ServiceService.update(id, data);
-      navigate("/manager/service");
-    } catch (error) {
-      console.error("Update failed:", error);
-    }
+    updateService(data);
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        var response = await ServiceService.getDetail(id);
-        var result = response.result;
-        setValue("name", result.name);
-        setValue("description", result.description);
-        setValue("category_id", result.category?.id);
-      } catch (error) {
-        console.log("Error fetching data: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    const fetchCategoryList = async () => {
-      try {
-        var response = await CategoryService.getSelectList();
-        console.log("Get select list", response.result);
-        setCategoryList(response.result);
-      } catch (error) {
-        console.log("Error fetching select list: ", error);
-      }
-    };
+    if (service) {
+      setValue("name", service.name);
+      setValue("description", service.description);
+      setValue("category_id", service.category?.id);
+    }
 
-    fetchCategoryList();
-    fetchData();
-  }, []);
+    fetchCategorySelectList();
+  }, [service]);
 
   if (loading) return <Spinner size="medium" />;
 
@@ -143,9 +115,9 @@ const UpdateService = () => {
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>
                         <SelectContent>
-                          {categoryList?.map((category) => (
+                          {categories?.map((category, key) => (
                             <SelectItem
-                              key={category.id}
+                              key={key}
                               value={category.id.toString()}
                             >
                               {category.name}

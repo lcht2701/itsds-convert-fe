@@ -23,7 +23,6 @@ import CommentService from "@/servers/CommentService";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { handleNullInputField } from "@/utils/HandleNullInputField";
 import CommentList from "./ui/CommentList";
 import { useAuth } from "@/contexts/AuthProvider";
 import { RouteByRole } from "@/utils/RouteByRole";
@@ -61,7 +60,6 @@ const TicketSolutionDetail = () => {
   };
 
   const onSubmitComment = async (data) => {
-    data = handleNullInputField(data);
     console.log(data);
     try {
       await CommentService.add(id, data).then(() => {

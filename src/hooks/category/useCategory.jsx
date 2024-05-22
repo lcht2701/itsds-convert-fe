@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CategoryService from "@/servers/CategoryService";
-import { handleNullInputField } from "@/utils/HandleNullInputField";
 
 const useCategory = (id) => {
   const [loading, setLoading] = useState(!!id);
@@ -27,7 +26,6 @@ const useCategory = (id) => {
   }, [id]);
 
   const addCategory = async (data) => {
-    data = handleNullInputField(data);
     console.log(data);
     try {
       await CategoryService.add(data);
@@ -38,7 +36,6 @@ const useCategory = (id) => {
   };
 
   const updateCategory = async (data) => {
-    data = handleNullInputField(data);
     try {
       await CategoryService.update(id, data);
       navigate("/manager/category");

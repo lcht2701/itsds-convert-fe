@@ -11,7 +11,6 @@ import { Textarea } from "@/components/ui/textarea";
 import DetailNavbar from "@/components/custom/DetailNavbar";
 import ServiceService from "@/servers/ServiceService";
 import { useNavigate, useParams } from "react-router-dom";
-import { handleNullInputField } from "@/utils/HandleNullInputField";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -60,7 +59,6 @@ const UpdateTicketSolution = () => {
   });
 
   const onSubmit = async (data) => {
-    data = handleNullInputField(data);
     console.log(data);
     try {
       await TicketSolutionService.update(id, data);

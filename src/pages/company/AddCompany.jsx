@@ -11,7 +11,6 @@ import DetailNavbar from "@/components/custom/DetailNavbar";
 import CompanyService from "@/servers/CompanyService";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { handleNullInputField } from "@/utils/HandleNullInputField";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorMessage from "@/components/custom/ErrorMessage";
@@ -47,7 +46,6 @@ const AddCompany = () => {
   });
 
   const onSubmit = async (data) => {
-    data = handleNullInputField(data);
     console.log(data);
     try {
       await CompanyService.add(data);

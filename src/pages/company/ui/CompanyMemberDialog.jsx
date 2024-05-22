@@ -14,7 +14,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 import ErrorMessage from "@/components/custom/ErrorMessage";
 import CompanyMemberService from "@/servers/CompanyMemberService";
-import { handleNullInputField } from "@/utils/HandleNullInputField";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -99,7 +98,6 @@ export function CompanyMemberDialog({
 
   const onSubmit = async (data) => {
     setLoading(true);
-    data = handleNullInputField(data);
 
     try {
       if (updateMemberId) {

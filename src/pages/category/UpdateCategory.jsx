@@ -14,7 +14,6 @@ import CategoryService from "@/servers/CategoryService";
 import { useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { useForm } from "react-hook-form";
-import { handleNullInputField } from "@/utils/HandleNullInputField";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorMessage from "@/components/custom/ErrorMessage";

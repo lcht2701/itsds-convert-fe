@@ -32,30 +32,16 @@ import { useNavigate } from "react-router-dom";
 import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
 import ListNavBar from "@/components/custom/ListNav";
 import { UserRoleToEnum } from "@/utils/EnumObject";
+import usePaginate from "@/hooks/usePaginate";
+import useDialog from "@/hooks/useDialog";
+import useServiceList from "@/hooks/service/useServiceList";
 
 const ServiceList = () => {
-  const [services, setServices] = useState([]);
-  const [paginationData, setPaginationData] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [activeDialogId, setActiveDialogId] = useState(null);
   const navigate = useNavigate();
-
-  const fetchData = useCallback(async () => {
-    try {
-      var response = await ServiceService.getPaginatedList(currentPage);
-      setServices(response.result.data);
-      setPaginationData(response.result.pagination);
-    } catch (error) {
-      console.log("Error fetching data: ", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage]);
-
-  const onChangePage = (pageNumber) => {
-    if (pageNumber !== null) setCurrentPage(pageNumber);
-  };
+  const { currentPage, paginationData, setPaginationData, onChangePage } =
+    usePaginate();
+  const { services, loading, fetchList } = useServiceList(currentPage);
+  const { activeDialogId, handleOpenDialog, handleCloseDialog } = useDialog();
 
   const handleOpenUpdateService = (id) => {
     navigate(`/manager/service/update/${id}`);
@@ -64,26 +50,17 @@ const ServiceList = () => {
   const handleConfirmDelete = async (id) => {
     try {
       await ServiceService.delete(id).then(() => {
-        setActiveDialogId(null);
-        setLoading(true);
-        fetchData();
+        handleCloseDialog();
+        fetchList();
       });
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleCancel = () => {
-    setActiveDialogId(null);
-  };
-
-  const handleOpenDialog = (id) => {
-    setActiveDialogId(id);
-  };
-
   useEffect(() => {
-    fetchData();
-  }, [currentPage, fetchData]);
+    fetchList().then(setPaginationData);
+  }, [currentPage, fetchList, setPaginationData]);
 
   return (
     <>
@@ -195,7 +172,7 @@ const ServiceList = () => {
         <ConfirmDialog
           isOpen={activeDialogId !== null}
           content="Do you want to delete this service?"
-          onCancel={handleCancel}
+          onCancel={handleCloseDialog}
           onConfirm={() => {
             handleConfirmDelete(activeDialogId);
           }}

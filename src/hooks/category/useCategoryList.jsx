@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import CategoryService from "@/servers/CategoryService";
 
 const useCategoryList = (currentPage) => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchList = useCallback(async () => {
+  const fetchCategoryList = useCallback(async () => {
     setLoading(true);
     try {
       const response = await CategoryService.getPaginatedList(currentPage);
@@ -18,10 +18,24 @@ const useCategoryList = (currentPage) => {
     }
   }, [currentPage]);
 
+  const fetchCategorySelectList = async () => {
+    setLoading(true);
+    try {
+      var response = await CategoryService.getSelectList();
+      console.log("Get select list", response.result);
+      setCategories(response.result);
+    } catch (error) {
+      console.log("Error fetching select list: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     categories,
     loading,
-    fetchList,
+    fetchCategoryList,
+    fetchCategorySelectList,
   };
 };
 

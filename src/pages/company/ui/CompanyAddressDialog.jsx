@@ -14,7 +14,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "@/components/custom/ErrorMessage";
 import CompanyAddressService from "@/servers/CompanyAddressService";
-import { handleNullInputField } from "@/utils/HandleNullInputField";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -64,7 +63,6 @@ export function CompanyAddressDialog({
 
   const onSubmit = async (data) => {
     setLoading(true);
-    data = handleNullInputField(data);
 
     try {
       if (updateAddressId) {
