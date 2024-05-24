@@ -1,38 +1,38 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CompanyService from "@/servers/CompanyService";
+import ContractService from "@/servers/ContractService";
 
-const useCompany = (id) => {
+const useContract = (id) => {
   const [loading, setLoading] = useState(!!id);
-  const [company, setCompany] = useState(null);
+  const [contract, setContract] = useState(null);
   const navigate = useNavigate();
 
-  const fetchCompany = async () => {
+  const fetchContract = async () => {
     setLoading(true);
     try {
-      const response = await CompanyService.getDetail(id);
-      setCompany(response.result);
+      const response = await ContractService.getDetail(id);
+      setContract(response.result);
     } catch (error) {
-      console.error("Error fetching company:", error);
+      console.error("Error fetching Contract:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const addCompany = async (data) => {
+  const addContract = async (data) => {
     console.log(data);
     try {
-      await CompanyService.add(data);
+      await ContractService.add(data);
       navigate(-1);
     } catch (error) {
       console.error("Add failed:", error);
     }
   };
 
-  const updateCompany = async (data) => {
+  const updateContract = async (data) => {
     console.log(data);
     try {
-      await CompanyService.update(id, data);
+      await ContractService.update(id, data);
       navigate(-1);
     } catch (error) {
       console.error("Update failed:", error);
@@ -41,16 +41,16 @@ const useCompany = (id) => {
 
   useEffect(() => {
     if (id) {
-      fetchCompany();
+      fetchContract();
     }
   }, [id]);
 
   return {
-    company,
+    contract,
     loading,
-    addCompany,
-    updateCompany,
+    addContract,
+    updateContract,
   };
 };
 
-export default useCompany;
+export default useContract;

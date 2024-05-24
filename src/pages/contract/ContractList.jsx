@@ -21,8 +21,6 @@ import CustomPagination from "@/components/custom/CustomPagination";
 import { useNavigate } from "react-router-dom";
 import ListNavBar from "@/components/custom/ListNav";
 import { ContractStatusBadge, UserRoleToEnum } from "@/utils/EnumObject";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import useContractList from "@/hooks/contract/useContractList";
 import usePaginate from "@/hooks/usePaginate";
 
@@ -69,12 +67,9 @@ const ContractList = () => {
                         </TableHead>
                         <TableHead>Contract Num</TableHead>
                         <TableHead>Contract Name</TableHead>
-                        <TableHead className="hidden md:table-cell">
-                          Description
-                        </TableHead>
                         <TableHead>Company</TableHead>
                         <TableHead className="hidden md:table-cell">
-                          End Date
+                          First date of contract
                         </TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="hidden md:table-cell">
@@ -101,14 +96,11 @@ const ContractList = () => {
                           <TableCell className="font-medium">
                             {contract.name || "-"}
                           </TableCell>
-                          <TableCell className="font-medium hidden md:table-cell">
-                            {contract.description || "-"}
-                          </TableCell>
                           <TableCell className="font-medium">
                             {contract.company?.company_name || "-"}
                           </TableCell>
                           <TableCell className="font-medium hidden md:table-cell">
-                            {contract.end_date || "-"}
+                            {contract.start_date || "-"}
                           </TableCell>
                           <TableCell className="font-medium ">
                             <ContractStatusBadge status={contract.status} />
