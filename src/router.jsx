@@ -79,6 +79,8 @@ const router = createBrowserRouter(
             path="ticket-solution/:id"
             element={<TicketSolutionDetail />}
           />
+          <Route path="company" element={<CompanyList />} />
+          <Route path="company/:id" element={<CompanyDetail />} />
           <Route path="setting/profile" element={<Profile />} />
         </Route>
       </Route>

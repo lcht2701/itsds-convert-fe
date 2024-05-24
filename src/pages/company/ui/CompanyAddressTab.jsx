@@ -32,8 +32,11 @@ import useCompanyAddressList from "@/hooks/companyAddress/useCompanyAddressList"
 import usePaginate from "@/hooks/usePaginate";
 import CustomPagination from "@/components/custom/CustomPagination";
 import useDialog from "@/hooks/useDialog";
+import { useAuth } from "@/contexts/AuthProvider";
+import { UserRoleToEnum } from "@/utils/EnumObject";
 
 function CompanyAddressTab({ companyId }) {
+  const { user } = useAuth();
   const { currentPage, paginationData, setPaginationData, onChangePage } =
     usePaginate();
   const { companyAddresses, loading, fetchCompanyAddressList } =
@@ -71,19 +74,21 @@ function CompanyAddressTab({ companyId }) {
           <CardTitle>Company Addresses</CardTitle>
           <CardDescription>Related locations of this company</CardDescription>
         </div>
-        <div className="ml-auto items-center">
-          <Button
-            type="button"
-            size="sm"
-            className="bg-blue-500 text-white gap-1"
-            onClick={() => createDialog.handleOpenDialog(companyId)}
-          >
-            <PlusCircle className="h-3.5 w-3.5" />
-            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              Add
-            </span>
-          </Button>
-        </div>
+        {user.role === UserRoleToEnum.MANAGER && (
+          <div className="ml-auto items-center">
+            <Button
+              type="button"
+              size="sm"
+              className="bg-blue-500 text-white gap-1"
+              onClick={() => createDialog.handleOpenDialog(companyId)}
+            >
+              <PlusCircle className="h-3.5 w-3.5" />
+              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                Add
+              </span>
+            </Button>
+          </div>
+        )}
       </CardHeader>
       {loading ? (
         <Spinner size="medium" className="mb-6" />
@@ -100,9 +105,11 @@ function CompanyAddressTab({ companyId }) {
                   <TableHead className="hidden md:table-cell">
                     Updated at
                   </TableHead>
-                  <TableHead>
-                    <span className="sr-only">Actions</span>
-                  </TableHead>
+                  {user.role === UserRoleToEnum.MANAGER && (
+                    <TableHead>
+                      <span className="sr-only">Actions</span>
+                    </TableHead>
+                  )}
                 </TableRow>
               </TableHeader>
 
@@ -118,37 +125,39 @@ function CompanyAddressTab({ companyId }) {
                     <TableCell className="hidden md:table-cell">
                       {address.updated_at}
                     </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem
-                            onClick={() =>
-                              updateDialog.handleOpenDialog(address.id)
-                            }
-                          >
-                            Update
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() =>
-                              deleteDialog.handleOpenDialog(address.id)
-                            }
-                          >
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+                    {user.role === UserRoleToEnum.MANAGER && (
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              aria-haspopup="true"
+                              size="icon"
+                              variant="ghost"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Toggle menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                updateDialog.handleOpenDialog(address.id)
+                              }
+                            >
+                              Update
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                deleteDialog.handleOpenDialog(address.id)
+                              }
+                            >
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>

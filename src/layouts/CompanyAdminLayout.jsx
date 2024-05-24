@@ -62,6 +62,9 @@ const CompanyAdminLayout = () => {
             >
               Ticket Solution
             </NavLink>
+            <NavLink to="/company-admin/company" className={getNavLinkClass}>
+              Company
+            </NavLink>
           </nav>
           <Sheet>
             <SheetTrigger asChild>
@@ -87,10 +90,16 @@ const CompanyAdminLayout = () => {
                   Home
                 </NavLink>
                 <NavLink
-                  to="/company-admin/home/ticket-solution"
+                  to="/company-admin/ticket-solution"
                   className={getNavLinkClass}
                 >
                   Ticket Solution
+                </NavLink>
+                <NavLink
+                  to="/company-admin/company"
+                  className={getNavLinkClass}
+                >
+                  Company
                 </NavLink>
               </nav>
             </SheetContent>
