@@ -4,36 +4,36 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import { Login } from "./pages/auth/Login";
-import ManagerLayout from "./layouts/ManagerLayout";
-import { HomeManager } from "./pages/home/HomeManager";
-import NotFound from "./pages/error/NotFound";
-import PublicRoute from "./routes/PublicRoute";
+import { Login } from "../pages/auth/Login";
+import ManagerLayout from "../layouts/ManagerLayout";
+import { HomeManager } from "../pages/home/HomeManager";
+import NotFound from "../pages/error/NotFound";
+import PublicRoute from "./PublicRoute";
 
-import CategoryList from "./pages/category/CategoryList";
-import AddCategory from "./pages/category/AddCategory";
-import UpdateCategory from "./pages/category/UpdateCategory";
-import ServiceList from "./pages/service/ServiceList";
-import AddService from "./pages/service/AddService";
-import UpdateService from "./pages/service/UpdateService";
-import Profile from "./pages/setting/Profile";
-import TicketSolutionList from "./pages/ticketSolution/TicketSolutionList";
-import AddTicketSolution from "./pages/ticketSolution/AddTicketSolution";
-import UpdateTicketSolution from "./pages/ticketSolution/UpdateTicketSolution";
-import TicketSolutionDetail from "./pages/ticketSolution/TicketSolutionDetail";
-import Unauthorized from "./pages/error/Unauthorized";
-import PrivateRoute from "./routes/PrivateRoute";
-import { UserRoleToEnum } from "./utils/EnumObject";
-import { HomeCustomer } from "./pages/home/HomeCustomer";
-import CustomerLayout from "./layouts/CustomerLayout";
-import CompanyAdminLayout from "./layouts/CompanyAdminLayout";
-import { HomeCompanyAdmin } from "./pages/home/HomeCompanyAdmin";
-import TechnicianLayout from "./layouts/TechnicianLayout";
-import { HomeTechnician } from "./pages/home/HomeTechnician";
-import CompanyList from "./pages/company/CompanyList";
-import UpdateCompany from "./pages/company/UpdateCompany";
-import AddCompany from "./pages/company/AddCompany";
-import CompanyDetail from "./pages/company/CompanyDetail";
+import CategoryList from "../pages/category/CategoryList";
+import AddCategory from "../pages/category/AddCategory";
+import UpdateCategory from "../pages/category/UpdateCategory";
+import ServiceList from "../pages/service/ServiceList";
+import AddService from "../pages/service/AddService";
+import UpdateService from "../pages/service/UpdateService";
+import Profile from "../pages/setting/Profile";
+import TicketSolutionList from "../pages/ticketSolution/TicketSolutionList";
+import AddTicketSolution from "../pages/ticketSolution/AddTicketSolution";
+import UpdateTicketSolution from "../pages/ticketSolution/UpdateTicketSolution";
+import TicketSolutionDetail from "../pages/ticketSolution/TicketSolutionDetail";
+import Unauthorized from "../pages/error/Unauthorized";
+import PrivateRoute from "./PrivateRoute";
+import { UserRoleToEnum } from "../utils/EnumObject";
+import { HomeCustomer } from "../pages/home/HomeCustomer";
+import CustomerLayout from "../layouts/CustomerLayout";
+import CompanyAdminLayout from "../layouts/CompanyAdminLayout";
+import { HomeCompanyAdmin } from "../pages/home/HomeCompanyAdmin";
+import TechnicianLayout from "../layouts/TechnicianLayout";
+import { HomeTechnician } from "../pages/home/HomeTechnician";
+import CompanyList from "../pages/company/CompanyList";
+import UpdateCompany from "../pages/company/UpdateCompany";
+import AddCompany from "../pages/company/AddCompany";
+import CompanyDetail from "../pages/company/CompanyDetail";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -125,6 +125,10 @@ const router = createBrowserRouter(
           <Route path="company/add" element={<AddCompany />} />
           <Route path="company/update/:id" element={<UpdateCompany />} />
           <Route path="company/:id" element={<CompanyDetail />} />
+          <Route path="contract" element={<CompanyList />} />
+          <Route path="contract/add" element={<AddCompany />} />
+          <Route path="contract/update/:id" element={<UpdateCompany />} />
+          <Route path="contract/:id" element={<CompanyDetail />} />
           <Route path="category" element={<CategoryList />} />
           <Route path="category/add" element={<AddCategory />} />
           <Route path="category/update/:id" element={<UpdateCategory />} />
