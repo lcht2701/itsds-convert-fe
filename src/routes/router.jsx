@@ -34,6 +34,7 @@ import CompanyList from "../pages/company/CompanyList";
 import UpdateCompany from "../pages/company/UpdateCompany";
 import AddCompany from "../pages/company/AddCompany";
 import CompanyDetail from "../pages/company/CompanyDetail";
+import ContractList from "@/pages/contract/ContractList";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -125,7 +126,7 @@ const router = createBrowserRouter(
           <Route path="company/add" element={<AddCompany />} />
           <Route path="company/update/:id" element={<UpdateCompany />} />
           <Route path="company/:id" element={<CompanyDetail />} />
-          <Route path="contract" element={<CompanyList />} />
+          <Route path="contract" element={<ContractList />} />
           <Route path="contract/add" element={<AddCompany />} />
           <Route path="contract/update/:id" element={<UpdateCompany />} />
           <Route path="contract/:id" element={<CompanyDetail />} />
