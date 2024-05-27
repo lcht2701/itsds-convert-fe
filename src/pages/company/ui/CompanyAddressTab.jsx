@@ -52,7 +52,7 @@ function CompanyAddressTab({ companyId }) {
   const handleConfirmDelete = async (id) => {
     try {
       await CompanyAddressService.delete(companyId, id).then(() => {
-        deleteDialog.handleCloseDialog();
+        deleteDialog.closeDialog();
         handleReload();
       });
     } catch (error) {
@@ -80,7 +80,7 @@ function CompanyAddressTab({ companyId }) {
               type="button"
               size="sm"
               className="bg-blue-500 text-white gap-1"
-              onClick={() => createDialog.handleOpenDialog(companyId)}
+              onClick={() => createDialog.openDialog(companyId)}
             >
               <PlusCircle className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
@@ -142,14 +142,14 @@ function CompanyAddressTab({ companyId }) {
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem
                               onClick={() =>
-                                updateDialog.handleOpenDialog(address.id)
+                                updateDialog.openDialog(address.id)
                               }
                             >
                               Update
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() =>
-                                deleteDialog.handleOpenDialog(address.id)
+                                deleteDialog.openDialog(address.id)
                               }
                             >
                               Delete
@@ -176,8 +176,8 @@ function CompanyAddressTab({ companyId }) {
       <CompanyAddressDialog
         isOpen={createDialog.dialog !== null || updateDialog.dialog !== null}
         onCancel={() => {
-          createDialog.handleCloseDialog();
-          updateDialog.handleCloseDialog();
+          createDialog.closeDialog();
+          updateDialog.closeDialog();
         }}
         companyId={companyId}
         updateAddressId={updateDialog.dialog}
@@ -186,7 +186,7 @@ function CompanyAddressTab({ companyId }) {
       <ConfirmDialog
         isOpen={deleteDialog.dialog !== null}
         content="Do you want to delete this address?"
-        onCancel={() => deleteDialog.handleCloseDialog()}
+        onCancel={() => deleteDialog.closeDialog()}
         onConfirm={() => {
           handleConfirmDelete(deleteDialog.dialog);
         }}

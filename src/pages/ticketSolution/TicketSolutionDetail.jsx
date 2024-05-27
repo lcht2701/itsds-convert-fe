@@ -38,7 +38,7 @@ const TicketSolutionDetail = () => {
   const { ticketSolution, loading, approve, reject } = useTicketSolution(id);
   const { comments, addComment, deleteComment, isOpenComment, setOpenComment } =
     useComment(id);
-  const { dialog, handleCloseDialog, handleOpenDialog } = useDialog();
+  const { dialog, closeDialog, openDialog } = useDialog();
   const route = RouteByRole(user.role);
   const navigate = useNavigate();
   const schema = yup.object().shape({
@@ -124,7 +124,7 @@ const TicketSolutionDetail = () => {
                 type="button"
                 variant="destructive"
                 size="sm"
-                onClick={() => handleOpenDialog(ticketSolution.id)}
+                onClick={() => openDialog(ticketSolution.id)}
               >
                 Delete
               </Button>
@@ -263,7 +263,7 @@ const TicketSolutionDetail = () => {
       <ConfirmDialog
         isOpen={dialog}
         content="Do you want to delete this solution?"
-        onCancel={handleCloseDialog}
+        onCancel={closeDialog}
         onConfirm={() => {
           handleConfirmDelete(ticketSolution.id);
         }}

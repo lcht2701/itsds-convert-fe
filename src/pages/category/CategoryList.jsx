@@ -42,7 +42,7 @@ const CategoryList = () => {
     usePaginate();
   const { categories, loading, fetchCategoryList } =
     useCategoryList(currentPage);
-  const { dialog, handleOpenDialog, handleCloseDialog } = useDialog();
+  const { dialog, openDialog, closeDialog } = useDialog();
 
   const handleOpenUpdateCategory = (id) => {
     navigate(`/manager/category/update/${id}`);
@@ -51,7 +51,7 @@ const CategoryList = () => {
   const handleConfirmDelete = async (id) => {
     try {
       await CategoryService.delete(id).then(() => {
-        handleCloseDialog();
+        closeDialog();
         fetchCategoryList();
       });
     } catch (error) {
@@ -143,7 +143,7 @@ const CategoryList = () => {
                                   Update
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                  onClick={() => handleOpenDialog(category.id)}
+                                  onClick={() => openDialog(category.id)}
                                 >
                                   Delete
                                 </DropdownMenuItem>
@@ -169,7 +169,7 @@ const CategoryList = () => {
         <ConfirmDialog
           isOpen={dialog !== null}
           content="Do you want to delete this category?"
-          onCancel={handleCloseDialog}
+          onCancel={closeDialog}
           onConfirm={() => {
             handleConfirmDelete(dialog);
           }}

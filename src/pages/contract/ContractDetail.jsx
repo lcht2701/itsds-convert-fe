@@ -1,68 +1,43 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import React, { useEffect, useState } from "react";
-import { ChevronLeft } from "lucide-react";
+import React from "react";
+import { ChevronLeft, Notebook, ReceiptText } from "lucide-react";
 import CompanyService from "@/servers/CompanyService";
 import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
 import { Spinner } from "@/components/ui/spinner";
-import { UserRoleToEnum } from "@/utils/EnumObject";
+import { ContractStatusBadge, UserRoleToEnum } from "@/utils/EnumObject";
 import { useAuth } from "@/contexts/AuthProvider";
 import { RouteByRole } from "@/utils/RouteByRole";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
-import CompanyAddressTab from "./ui/CompanyAddressTab";
-import CompanyMemberTab from "./ui/CompanyMemberTab";
-import { CompanyDetailCard } from "./ui/CompanyDetailCard";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import useDialog from "@/hooks/useDialog";
+import useContract from "@/hooks/contract/useContract";
+import { ContractDetailCard } from "./ui/ContractDetailCard";
+import { ContractCompanyDetailCard } from "./ui/ContractCompanyDetailCard";
 
 const ContractDetail = () => {
   const { id } = useParams();
   const { user } = useAuth();
-  const [company, setCompany] = useState({});
-  const [isOpen, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { dialog, openDialog, closeDialog } = useDialog();
+  const { contract, loading } = useContract(id);
   const route = RouteByRole(user.role);
   const navigate = useNavigate();
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      var response = await CompanyService.getDetail(id);
-      var result = response.result;
-      setCompany(result);
-    } catch (error) {
-      console.log("Error fetching data: ", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleOpenUpdatePage = () => {
-    navigate(`${route}/company/update/${id}`);
+    navigate(`${route}/contract/update/${id}`);
   };
 
   const handleConfirmDelete = async () => {
     try {
       await CompanyService.delete(id).then(() => {
-        setOpen(false);
-        setLoading(true);
         navigate(-1);
       });
     } catch (error) {
       console.log(error);
     }
   };
-
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
-  const handleOpenDialog = () => {
-    setOpen(true);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   if (loading) return <Spinner size="medium" />;
 
@@ -89,7 +64,7 @@ const ContractDetail = () => {
                 type="button"
                 size="sm"
                 className="bg-blue-500 text-white"
-                onClick={() => handleOpenUpdatePage(company.id)}
+                onClick={() => handleOpenUpdatePage(contract.id)}
               >
                 Update
               </Button>
@@ -97,7 +72,7 @@ const ContractDetail = () => {
                 type="button"
                 variant="destructive"
                 size="sm"
-                onClick={() => handleOpenDialog()}
+                onClick={() => openDialog(contract.id)}
               >
                 Delete
               </Button>
@@ -106,26 +81,77 @@ const ContractDetail = () => {
         </div>
       </div>
       <div className="grid gap-8">
-        <CompanyDetailCard company={company} />
-        <Tabs defaultValue="address" className="grid">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="address">Addresses</TabsTrigger>
-            <TabsTrigger value="member">Members</TabsTrigger>
-          </TabsList>
-          <TabsContent value="address">
-            <CompanyAddressTab companyId={company.id} />
-          </TabsContent>
-          <TabsContent value="member">
-            <CompanyMemberTab companyId={company.id} />
-          </TabsContent>
-        </Tabs>
+        <Card x-chunk="dashboard-01-chunk-4">
+          <CardHeader className="flex flex-row items-center">
+            <div className="flex items-center gap-4">
+              <Avatar className="hidden h-16 w-16 sm:flex">
+                <AvatarFallback className="text-2xl">
+                  <ReceiptText className="h-6 w-6" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="grid gap-1">
+                <div className="flex gap-2">
+                  <p className="text-2xl font-medium leading-none">
+                    {contract.name}
+                  </p>
+                  <span>
+                    <ContractStatusBadge status={contract.status} />
+                  </span>
+                </div>
+                <div className="text-sm">
+                  <div className="flex gap-2 items-center">
+                    <p className="text-muted-foreground">Contract Number:</p>
+                    <span className="italic">{contract.contract_num}</span>
+                  </div>
+                </div>
+                <div className="text-sm">
+                  <div className="flex gap-2 items-center">
+                    <p className="text-muted-foreground">Valid until:</p>
+                    <span className="italic ">{contract.end_date}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="detail" className="flex flex-col items-start">
+              <TabsList className="flex">
+                <TabsTrigger value="detail" className="flex items-center ">
+                  <p className="flex items-center gap-1 px-6">
+                    <span>
+                      <ReceiptText className="h-5 w-5" />
+                    </span>
+                    Contract Detail
+                  </p>
+                </TabsTrigger>
+                <TabsTrigger value="services" className="flex items-center">
+                  <p className="flex items-center gap-1 px-6">
+                    <span>
+                      <Notebook className="h-5 w-5" />
+                    </span>
+                    Services
+                  </p>
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="detail" className="w-full mt-1">
+                <div className="grid gap-8">
+                  <ContractDetailCard contract={contract} />
+                  <ContractCompanyDetailCard contract={contract} />
+                </div>
+              </TabsContent>
+              <TabsContent value="services" className="w-full">
+                {/* Content for Services */}
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
       </div>
       <ConfirmDialog
-        isOpen={isOpen}
-        content="Do you want to delete this company?"
-        onCancel={handleCancel}
+        isOpen={dialog}
+        content="Do you want to delete this contract?"
+        onCancel={closeDialog}
         onConfirm={() => {
-          handleConfirmDelete(company.id);
+          handleConfirmDelete(contract.id);
         }}
       />
     </div>

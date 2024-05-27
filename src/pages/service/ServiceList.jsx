@@ -41,7 +41,7 @@ const ServiceList = () => {
   const { currentPage, paginationData, setPaginationData, onChangePage } =
     usePaginate();
   const { services, loading, fetchServiceList } = useServiceList(currentPage);
-  const { dialog, handleOpenDialog, handleCloseDialog } = useDialog();
+  const { dialog, openDialog, closeDialog } = useDialog();
 
   const handleOpenUpdateService = (id) => {
     navigate(`/manager/service/update/${id}`);
@@ -50,7 +50,7 @@ const ServiceList = () => {
   const handleConfirmDelete = async (id) => {
     try {
       await ServiceService.delete(id).then(() => {
-        handleCloseDialog();
+        closeDialog();
         fetchServiceList();
       });
     } catch (error) {
@@ -146,7 +146,7 @@ const ServiceList = () => {
                                   Update
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
-                                  onClick={() => handleOpenDialog(service.id)}
+                                  onClick={() => openDialog(service.id)}
                                 >
                                   Delete
                                 </DropdownMenuItem>
@@ -172,7 +172,7 @@ const ServiceList = () => {
         <ConfirmDialog
           isOpen={dialog !== null}
           content="Do you want to delete this service?"
-          onCancel={handleCloseDialog}
+          onCancel={closeDialog}
           onConfirm={() => {
             handleConfirmDelete(dialog);
           }}

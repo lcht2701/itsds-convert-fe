@@ -56,7 +56,7 @@ const CompanyDetail = () => {
     setOpen(false);
   };
 
-  const handleOpenDialog = () => {
+  const openDialog = () => {
     setOpen(true);
   };
 
@@ -97,7 +97,7 @@ const CompanyDetail = () => {
                 type="button"
                 variant="destructive"
                 size="sm"
-                onClick={() => handleOpenDialog()}
+                onClick={() => openDialog()}
               >
                 Delete
               </Button>

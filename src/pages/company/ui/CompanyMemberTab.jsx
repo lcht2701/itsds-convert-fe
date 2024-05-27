@@ -53,7 +53,7 @@ function CompanyMemberTab({ companyId }) {
   const handleConfirmDelete = async (id) => {
     try {
       await CompanyMemberService.delete(companyId, id).then(() => {
-        deleteDialog.handleCloseDialog();
+        deleteDialog.closeDialog();
         handleReload();
       });
     } catch (error) {
@@ -81,7 +81,7 @@ function CompanyMemberTab({ companyId }) {
               type="button"
               size="sm"
               className="bg-blue-500 text-white gap-1"
-              onClick={() => createDialog.handleOpenDialog(companyId)}
+              onClick={() => createDialog.openDialog(companyId)}
             >
               <PlusCircle className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
@@ -145,16 +145,12 @@ function CompanyMemberTab({ companyId }) {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem
-                              onClick={() =>
-                                updateDialog.handleOpenDialog(member.id)
-                              }
+                              onClick={() => updateDialog.openDialog(member.id)}
                             >
                               Update
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={() =>
-                                deleteDialog.handleOpenDialog(member.id)
-                              }
+                              onClick={() => deleteDialog.openDialog(member.id)}
                             >
                               Delete
                             </DropdownMenuItem>
@@ -180,8 +176,8 @@ function CompanyMemberTab({ companyId }) {
       <CompanyMemberDialog
         isOpen={createDialog.dialog !== null || updateDialog.dialog !== null}
         onCancel={() => {
-          createDialog.handleCloseDialog();
-          updateDialog.handleCloseDialog();
+          createDialog.closeDialog();
+          updateDialog.closeDialog();
         }}
         companyId={companyId}
         updateMemberId={updateDialog.dialog}
@@ -190,7 +186,7 @@ function CompanyMemberTab({ companyId }) {
       <ConfirmDialog
         isOpen={deleteDialog.dialog !== null}
         content="Do you want to delete this member?"
-        onCancel={() => deleteDialog.handleCloseDialog()}
+        onCancel={() => deleteDialog.closeDialog()}
         onConfirm={() => {
           handleConfirmDelete(deleteDialog.dialog);
         }}
