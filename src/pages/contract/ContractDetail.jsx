@@ -5,7 +5,11 @@ import { ChevronLeft, Notebook, ReceiptText } from "lucide-react";
 import CompanyService from "@/servers/CompanyService";
 import { ConfirmDialog } from "@/components/custom/ConfirmDialog";
 import { Spinner } from "@/components/ui/spinner";
-import { ContractStatusBadge, UserRoleToEnum } from "@/utils/EnumObject";
+import {
+  ContractStatusBadge,
+  ContractStatusToEnum,
+  UserRoleToEnum,
+} from "@/utils/EnumObject";
 import { useAuth } from "@/contexts/AuthProvider";
 import { RouteByRole } from "@/utils/RouteByRole";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,6 +20,7 @@ import useDialog from "@/hooks/useDialog";
 import useContract from "@/hooks/contract/useContract";
 import { ContractDetailCard } from "./ui/ContractDetailCard";
 import { ContractCompanyDetailCard } from "./ui/ContractCompanyDetailCard";
+import ContractServiceTab from "./ui/ContractServiceTab";
 
 const ContractDetail = () => {
   const { id } = useParams();
@@ -58,26 +63,27 @@ const ContractDetail = () => {
           Company Detail
         </h1>
         <div className="ml-auto items-center gap-2 flex">
-          {user.role === UserRoleToEnum.MANAGER && (
-            <>
-              <Button
-                type="button"
-                size="sm"
-                className="bg-blue-500 text-white"
-                onClick={() => handleOpenUpdatePage(contract.id)}
-              >
-                Update
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                size="sm"
-                onClick={() => openDialog(contract.id)}
-              >
-                Delete
-              </Button>
-            </>
-          )}
+          {user.role === UserRoleToEnum.MANAGER &&
+            contract.status !== ContractStatusToEnum.EXPIRED && (
+              <>
+                <Button
+                  type="button"
+                  size="sm"
+                  className="bg-blue-500 text-white"
+                  onClick={() => handleOpenUpdatePage(contract.id)}
+                >
+                  Update
+                </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => openDialog(contract.id)}
+                >
+                  Delete
+                </Button>
+              </>
+            )}
         </div>
       </div>
       <div className="grid gap-8">
@@ -140,7 +146,7 @@ const ContractDetail = () => {
                 </div>
               </TabsContent>
               <TabsContent value="services" className="w-full mt-2">
-                {/* Content for Services */}
+                <ContractServiceTab contract={contract} />
               </TabsContent>
             </Tabs>
           </CardContent>
