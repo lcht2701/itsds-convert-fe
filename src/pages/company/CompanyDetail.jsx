@@ -107,15 +107,19 @@ const CompanyDetail = () => {
       </div>
       <div className="grid gap-8">
         <CompanyDetailCard company={company} />
-        <Tabs defaultValue="address" className="grid">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="address">Addresses</TabsTrigger>
-            <TabsTrigger value="member">Members</TabsTrigger>
+        <Tabs defaultValue="address" className="flex flex-col items-start">
+          <TabsList className="flex">
+            <TabsTrigger value="address" className="px-6">
+              Addresses
+            </TabsTrigger>
+            <TabsTrigger value="member" className="px-6">
+              Members
+            </TabsTrigger>
           </TabsList>
-          <TabsContent value="address">
+          <TabsContent value="address" className="w-full mt-2">
             <CompanyAddressTab companyId={company.id} />
           </TabsContent>
-          <TabsContent value="member">
+          <TabsContent value="member" className="w-full mt-2">
             <CompanyMemberTab companyId={company.id} />
           </TabsContent>
         </Tabs>

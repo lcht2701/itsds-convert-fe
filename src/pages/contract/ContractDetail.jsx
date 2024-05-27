@@ -116,7 +116,7 @@ const ContractDetail = () => {
           <CardContent>
             <Tabs defaultValue="detail" className="flex flex-col items-start">
               <TabsList className="flex">
-                <TabsTrigger value="detail" className="flex items-center ">
+                <TabsTrigger value="detail" className="flex items-center">
                   <p className="flex items-center gap-1 px-6">
                     <span>
                       <ReceiptText className="h-5 w-5" />
@@ -133,13 +133,13 @@ const ContractDetail = () => {
                   </p>
                 </TabsTrigger>
               </TabsList>
-              <TabsContent value="detail" className="w-full mt-1">
-                <div className="grid gap-8">
+              <TabsContent value="detail" className="w-full mt-2">
+                <div className="grid gap-6">
                   <ContractDetailCard contract={contract} />
                   <ContractCompanyDetailCard contract={contract} />
                 </div>
               </TabsContent>
-              <TabsContent value="services" className="w-full">
+              <TabsContent value="services" className="w-full mt-2">
                 {/* Content for Services */}
               </TabsContent>
             </Tabs>
