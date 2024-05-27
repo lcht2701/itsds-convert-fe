@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import useContractServiceList from "@/hooks/contractService/useContractServiceList";
 import useContractService from "@/hooks/contractService/useContractService";
-import Select from "react-select";
+import { MultiSelect } from "@/components/custom/MultiSelect";
 
 export function ContractServiceDialog({
   isOpen,
@@ -78,18 +78,9 @@ export function ContractServiceDialog({
                 control={control}
                 name="serviceIds"
                 render={({ field }) => (
-                  <Select
-                    isMulti
+                  <MultiSelect
                     options={mappedServices}
-                    onChange={(selectedOptions) =>
-                      field.onChange(
-                        selectedOptions
-                          ? selectedOptions.map((option) => option.value)
-                          : []
-                      )
-                    }
-                    className="w-full"
-                    classNamePrefix="select"
+                    onChange={field.onChange}
                   />
                 )}
               />
