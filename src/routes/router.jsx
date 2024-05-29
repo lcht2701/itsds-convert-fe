@@ -85,6 +85,8 @@ const router = createBrowserRouter(
           />
           <Route path="company" element={<CompanyList />} />
           <Route path="company/:id" element={<CompanyDetail />} />
+          <Route path="contract" element={<ContractList />} />
+          <Route path="contract/:id" element={<ContractDetail />} />
           <Route path="setting/profile" element={<Profile />} />
         </Route>
       </Route>
@@ -130,9 +132,9 @@ const router = createBrowserRouter(
           <Route path="company/update/:id" element={<UpdateCompany />} />
           <Route path="company/:id" element={<CompanyDetail />} />
           <Route path="contract" element={<ContractList />} />
+          <Route path="contract/:id" element={<ContractDetail />} />
           <Route path="contract/add" element={<AddContract />} />
           <Route path="contract/update/:id" element={<UpdateContract />} />
-          <Route path="contract/:id" element={<ContractDetail />} />
           <Route path="category" element={<CategoryList />} />
           <Route path="category/add" element={<AddCategory />} />
           <Route path="category/update/:id" element={<UpdateCategory />} />

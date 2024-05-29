@@ -65,6 +65,9 @@ const CompanyAdminLayout = () => {
             <NavLink to="/company-admin/company" className={getNavLinkClass}>
               Company
             </NavLink>
+            <NavLink to="/company-admin/contract" className={getNavLinkClass}>
+              Contract
+            </NavLink>
           </nav>
           <Sheet>
             <SheetTrigger asChild>
@@ -100,6 +103,12 @@ const CompanyAdminLayout = () => {
                   className={getNavLinkClass}
                 >
                   Company
+                </NavLink>
+                <NavLink
+                  to="/company-admin/contract"
+                  className={getNavLinkClass}
+                >
+                  Contract
                 </NavLink>
               </nav>
             </SheetContent>
