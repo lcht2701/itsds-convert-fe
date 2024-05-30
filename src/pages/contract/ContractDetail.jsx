@@ -21,6 +21,7 @@ import useContract from "@/hooks/contract/useContract";
 import { ContractDetailCard } from "./ui/ContractDetailCard";
 import { ContractCompanyDetailCard } from "./ui/ContractCompanyDetailCard";
 import ContractServiceTab from "./ui/ContractServiceTab";
+import ContractService from "@/servers/ContractService";
 
 const ContractDetail = () => {
   const { id } = useParams();
@@ -36,7 +37,7 @@ const ContractDetail = () => {
 
   const handleConfirmDelete = async () => {
     try {
-      await CompanyService.delete(id).then(() => {
+      await ContractService.delete(id).then(() => {
         navigate(-1);
       });
     } catch (error) {
@@ -60,7 +61,7 @@ const ContractDetail = () => {
           <span className="sr-only">Back</span>
         </Button>
         <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-          Company Detail
+          Contract Detail
         </h1>
         <div className="ml-auto items-center gap-2 flex">
           {user.role === UserRoleToEnum.MANAGER &&

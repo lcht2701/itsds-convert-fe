@@ -38,6 +38,10 @@ import ContractList from "@/pages/contract/ContractList";
 import AddContract from "@/pages/contract/AddContract";
 import UpdateContract from "@/pages/contract/UpdateContract";
 import ContractDetail from "@/pages/contract/ContractDetail";
+import TicketList from "@/pages/ticket/TicketList";
+import AddTicket from "@/pages/ticket/AddTicket";
+import TicketDetail from "@/pages/ticket/TicketDetail";
+import UpdateTicket from "@/pages/ticket/UpdateTicket";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -138,6 +142,10 @@ const router = createBrowserRouter(
           <Route path="category" element={<CategoryList />} />
           <Route path="category/add" element={<AddCategory />} />
           <Route path="category/update/:id" element={<UpdateCategory />} />
+          <Route path="ticket" element={<TicketList />} />
+          <Route path="ticket/:id" element={<TicketDetail />} />
+          <Route path="ticket/add" element={<AddTicket />} />
+          <Route path="ticket/update/:id" element={<UpdateTicket />} />
           <Route path="service" element={<ServiceList />} />
           <Route path="service/add" element={<AddService />} />
           <Route path="service/update/:id" element={<UpdateService />} />

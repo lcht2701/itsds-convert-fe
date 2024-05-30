@@ -20,24 +20,23 @@ import { Spinner } from "@/components/ui/spinner";
 import CustomPagination from "@/components/custom/CustomPagination";
 import { useNavigate } from "react-router-dom";
 import ListNavBar from "@/components/custom/ListNav";
-import { ActiveBadge, UserRoleToEnum } from "@/utils/EnumObject";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import useCompanyList from "@/hooks/company/useCompanyList";
+import { TicketStatusBadge, UserRoleToEnum } from "@/utils/EnumObject";
+import useTicketList from "@/hooks/ticket/useTicketList";
 import usePaginate from "@/hooks/usePaginate";
 
-const CompanyList = () => {
+const TicketList = () => {
   const navigate = useNavigate();
   const { currentPage, paginationData, setPaginationData, onChangePage } =
     usePaginate();
-  const { companies, loading, fetchCompanyList } = useCompanyList(currentPage);
+  const { tickets, loading, fetchTicketList } = useTicketList(currentPage);
 
   const handleOpenDetailPage = (id) => {
     navigate(`${id}`);
   };
 
   useEffect(() => {
-    fetchCompanyList().then(setPaginationData);
-  }, [currentPage, fetchCompanyList, setPaginationData]);
+    fetchTicketList().then(setPaginationData);
+  }, [currentPage, fetchTicketList, setPaginationData]);
 
   return (
     <>
@@ -45,14 +44,14 @@ const CompanyList = () => {
         <Tabs defaultValue="all">
           <ListNavBar
             navigate={navigate}
-            acceptedRoles={[UserRoleToEnum.MANAGER]}
+            acceptedRoles={[UserRoleToEnum.MANAGER, UserRoleToEnum.TECHNICIAN]}
           />
           <TabsContent value="all">
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>
-                <CardTitle>Companies</CardTitle>
+                <CardTitle>Tickets</CardTitle>
                 <CardDescription>
-                  Manage companies and their details
+                  Manage tickets and their details
                 </CardDescription>
               </CardHeader>
               {loading ? (
@@ -65,9 +64,9 @@ const CompanyList = () => {
                         <TableHead className="hidden w-[100px] sm:table-cell">
                           <span className="sr-only"></span>
                         </TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Phone</TableHead>
-                        <TableHead>Email</TableHead>
+                        <TableHead>Requester</TableHead>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Service</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="hidden md:table-cell">
                           Created at
@@ -79,39 +78,31 @@ const CompanyList = () => {
                     </TableHeader>
 
                     <TableBody>
-                      {companies?.map((company, key) => (
+                      {tickets?.map((ticket, key) => (
                         <TableRow
                           key={key}
-                          onClick={() => handleOpenDetailPage(company.id)}
+                          onClick={() => handleOpenDetailPage(ticket.id)}
                         >
                           <TableCell className="hidden sm:table-cell">
-                            <Avatar>
-                              <AvatarImage
-                                src={company.logo_url}
-                                alt={company.company_name.charAt(0)}
-                              />
-                              <AvatarFallback>
-                                {company.company_name.charAt(0)}
-                              </AvatarFallback>
-                            </Avatar>
+                            {ticket.id || "-"}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {company.company_name || "-"}
+                            {ticket.requester?.name || "-"}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {company.phone || "-"}
+                            {ticket.title || "-"}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {company.email || "-"}
+                            {ticket.service?.name || "-"}
                           </TableCell>
                           <TableCell className="font-medium">
-                            <ActiveBadge isActive={company.is_active} />
+                            <TicketStatusBadge status={ticket.status} />
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            {company.created_at}
+                            {ticket.created_at}
                           </TableCell>
                           <TableCell className="hidden md:table-cell">
-                            {company.updated_at}
+                            {ticket.updated_at}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -133,4 +124,4 @@ const CompanyList = () => {
   );
 };
 
-export default CompanyList;
+export default TicketList;

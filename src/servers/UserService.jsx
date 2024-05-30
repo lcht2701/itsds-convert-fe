@@ -12,6 +12,16 @@ class UserService {
     }
   }
 
+  async getRequesterList() {
+    try {
+      const response = await apiClient.get(`/api/user/requester/select`);
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error during the get requester list process:", error);
+    }
+  }
+
   async getProfile() {
     try {
       const response = await apiClient.get(`/api/user/profile`);

@@ -133,10 +133,7 @@ const TicketSolutionDetail = () => {
         </div>
       </div>
       <div className="grid gap-4 lg:grid-cols-6 xl:grid-cols-12">
-        <Card
-          className="lg:col-span-4 xl:col-span-9"
-          x-chunk="dashboard-01-chunk-4"
-        >
+        <Card className="lg:col-span-4 xl:col-span-9">
           <CardHeader className="flex flex-row items-center">
             <div className="flex items-center gap-4">
               <Avatar className="hidden h-16 w-16 sm:flex">
@@ -208,17 +205,13 @@ const TicketSolutionDetail = () => {
             />
           </CardContent>
         </Card>
-        <Card
-          className="lg:col-span-2 xl:col-span-3"
-          x-chunk="dashboard-01-chunk-5"
-        >
+        <Card className="lg:col-span-2 xl:col-span-3">
           <CardHeader>
             <CardTitle>More</CardTitle>
             <CardDescription>
               Related information about this ticket solution
             </CardDescription>
           </CardHeader>
-
           <CardContent className="grid gap-4">
             <CardTitle className="text-lg">Solution Detail</CardTitle>
             <div className="grid grid-cols-2 text-sm">

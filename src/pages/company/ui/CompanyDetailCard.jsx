@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 
 export function CompanyDetailCard(props) {
   return (
-    <Card x-chunk="dashboard-01-chunk-4">
+    <Card>
       <CardHeader className="flex flex-row items-center">
         <div className="flex items-center gap-4">
           <Avatar className="hidden h-16 w-16 sm:flex">

@@ -56,8 +56,11 @@ const ManagerLayout = () => {
             <NavLink to="/manager/home" className={getNavLinkClass}>
               Home
             </NavLink>
+            <NavLink to="/manager/ticket" className={getNavLinkClass}>
+              Tickets
+            </NavLink>
             <NavLink to="/manager/ticket-solution" className={getNavLinkClass}>
-              Ticket Solution
+              Ticket Solutions
             </NavLink>
             <NavLink to="/manager/company" className={getNavLinkClass}>
               Companies
@@ -95,11 +98,14 @@ const ManagerLayout = () => {
                 <NavLink to="/manager/home" className={getNavLinkClass}>
                   Home
                 </NavLink>
+                <NavLink to="/manager/ticket" className={getNavLinkClass}>
+                  Tickets
+                </NavLink>
                 <NavLink
-                  to="/manager/home/ticket-solution"
+                  to="/manager/ticket-solution"
                   className={getNavLinkClass}
                 >
-                  Ticket Solution
+                  Ticket Solutions
                 </NavLink>
                 <NavLink to="/manager/company" className={getNavLinkClass}>
                   Companies
