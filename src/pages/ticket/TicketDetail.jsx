@@ -34,17 +34,19 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import useDialog from "@/hooks/useDialog";
 import useTicket from "@/hooks/ticket/useTicket";
 import { Separator } from "@/components/ui/separator";
-import useAssignment from "@/hooks/assignment/useAssignment";
 import { TabsContent } from "@radix-ui/react-tabs";
 import TicketDetailTab from "./ui/TicketDetailTab";
 import TicketTaskTab from "./ui/TicketTaskTab";
+import UpdateStatusButton from "./ui/UpdateStatusButton";
+import AssignTicketButton from "./ui/AssignTicketButton";
+import useAssignment from "@/hooks/assignment/useAssignment";
 
 const TicketDetail = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const { dialog, openDialog, closeDialog } = useDialog();
-  const { ticket, loading } = useTicket(id);
-  const { assignment } = useAssignment(id);
+  const { ticket, loading, fetchTicket } = useTicket(id);
+  const { assignment, fetchAssignment } = useAssignment(id);
   const route = RouteByRole(user.role);
   const navigate = useNavigate();
 
@@ -82,8 +84,17 @@ const TicketDetail = () => {
         </h1>
         <div className="ml-auto items-center gap-2 flex">
           {user.role === UserRoleToEnum.MANAGER &&
-            ticket.status !== TicketStatusToEnum.EXPIRED && (
+            ticket.status !== TicketStatusToEnum.CLOSED &&
+            ticket.status !== TicketStatusToEnum.CANCELLED && (
               <>
+                <UpdateStatusButton
+                  ticketId={ticket.id}
+                  onReload={() => fetchTicket()}
+                />
+                <AssignTicketButton
+                  ticketId={ticket.id}
+                  onReload={() => fetchAssignment()}
+                />
                 <Button
                   type="button"
                   size="sm"

@@ -152,9 +152,7 @@ class TicketService {
 
   async updateStatus(id) {
     try {
-      const response = await apiClient.delete(
-        `/api/ticket/${id}/update-status`
-      );
+      const response = await apiClient.patch(`/api/ticket/${id}/update-status`);
       console.log("Update ticket status", response.data);
       toast({
         title: "Successful",

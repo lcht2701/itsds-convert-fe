@@ -23,7 +23,6 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import CompanyAddressService from "@/servers/CompanyAddressService";
-import useCompanyMemberList from "@/hooks/companyMember/useCompanyMemberList";
 import useCompanyAddressList from "@/hooks/companyAddress/useCompanyAddressList";
 
 export function CompanyMemberDialog({

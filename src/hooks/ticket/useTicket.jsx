@@ -81,7 +81,6 @@ const useTicket = (id) => {
   };
 
   const updateTicketStatus = async () => {
-    console.log(data);
     try {
       await TicketService.updateStatus(id);
       // navigate(-1);
@@ -91,7 +90,6 @@ const useTicket = (id) => {
   };
 
   const cancelTicket = async () => {
-    console.log(data);
     try {
       await TicketService.cancelTicketByCustomer(id);
       // navigate(-1);
@@ -111,6 +109,7 @@ const useTicket = (id) => {
     availableServices,
     loading,
     requesters,
+    fetchTicket,
     fetchRequesters,
     fetchServices,
     addTicket,

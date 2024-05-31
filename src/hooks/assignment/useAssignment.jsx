@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import AssignmentService from "@/servers/AssignmentService";
 
 const useAssignment = (ticketId) => {
   const [assignment, setAssignment] = useState(null);
-  const navigate = useNavigate();
+  const [technicians, setTechnicians] = useState([]);
 
   const fetchAssignment = async () => {
     try {
@@ -12,6 +11,15 @@ const useAssignment = (ticketId) => {
       setAssignment(response.result);
     } catch (error) {
       console.error("Error fetching assignment:", error);
+    }
+  };
+
+  const fetchTechnicians = async () => {
+    try {
+      const response = await AssignmentService.getTechnicians(ticketId);
+      setTechnicians(response.result);
+    } catch (error) {
+      console.error("Error fetching technicians:", error);
     }
   };
 
@@ -33,6 +41,9 @@ const useAssignment = (ticketId) => {
 
   return {
     assignment,
+    technicians,
+    fetchAssignment,
+    fetchTechnicians,
     addAssignment,
   };
 };

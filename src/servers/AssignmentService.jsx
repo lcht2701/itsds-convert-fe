@@ -2,7 +2,7 @@ import { toast } from "@/components/ui/use-toast";
 import apiClient from "./ApiClient";
 
 class AssignmentService {
-  async getPaginatedList(ticketId) {
+  async getTechnicians(ticketId) {
     try {
       const response = await apiClient.get(
         `/api/ticket/${ticketId}/assign/technicians`
@@ -17,7 +17,7 @@ class AssignmentService {
   async add(ticketId, data) {
     try {
       const response = await apiClient.post(
-        `/api/ticket/${ticketId}/ticket-task`,
+        `/api/ticket/${ticketId}/assign`,
         data
       );
       console.log("Add Ticket Task Successfully", response.data);
@@ -43,10 +43,10 @@ class AssignmentService {
   async getDetail(ticketId) {
     try {
       const response = await apiClient.get(`/api/ticket/${ticketId}/assign`);
-      console.log("Get Ticket Task Detail", response.data);
+      console.log("Get Assignment", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error during the get detail process:", error);
+      console.error("Error during the get assignment process:", error);
     }
   }
 
