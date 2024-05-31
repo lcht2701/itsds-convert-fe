@@ -19,11 +19,14 @@ class AuthService {
       });
       return loginResponse.data;
     } catch (error) {
-      console.error("Error during the login process:", error);
+      const errorMessage =
+        error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : "An unexpected error occurred";
       toast({
         variant: "destructive",
         title: "Error",
-        description: `${error}`,
+        description: `${errorMessage}`,
       });
     }
   }
@@ -37,11 +40,14 @@ class AuthService {
         description: `${response.data?.message}`,
       });
     } catch (error) {
-      console.error("Error during the login process:", error);
+      const errorMessage =
+        error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : "An unexpected error occurred";
       toast({
         variant: "destructive",
         title: "Error",
-        description: `${error}`,
+        description: `${errorMessage}`,
       });
     }
   }

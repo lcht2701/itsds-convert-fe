@@ -42,10 +42,14 @@ class UserService {
       });
       return response.data;
     } catch (error) {
+      const errorMessage =
+        error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : "An unexpected error occurred";
       toast({
         variant: "destructive",
         title: "Error",
-        description: `${error}`,
+        description: `${errorMessage}`,
       });
     }
   }
@@ -75,7 +79,7 @@ class UserService {
   //     toast({
   //       variant: "destructive",
   //       title: "Error",
-  //       description: `${error}`,
+  //       description: `${error.response?.data?.message}`
   //     });
   //   }
   // }
@@ -90,7 +94,7 @@ class UserService {
   //     toast({
   //       variant: "destructive",
   //       title: "Error",
-  //       description: `${error}`,
+  //       description: `${error.response?.data?.message}`
   //     });
   //   }
   // }
@@ -109,7 +113,7 @@ class UserService {
   //     toast({
   //       variant: "destructive",
   //       title: "Error",
-  //       description: `${error}`,
+  //       description: `${error.response?.data?.message}`
   //     });
   //   }
   // }
@@ -128,7 +132,7 @@ class UserService {
   //     toast({
   //       variant: "destructive",
   //       title: "Error",
-  //       description: `${error}`,
+  //       description: `${error.response?.data?.message}`
   //     });
   //   }
   // }

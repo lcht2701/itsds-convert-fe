@@ -40,11 +40,14 @@ class CompanyMemberService {
       });
       return response.data;
     } catch (error) {
-      console.error("Error during the add process:", error);
+      const errorMessage =
+        error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : "An unexpected error occurred";
       toast({
         variant: "destructive",
         title: "Error",
-        description: `${error}`,
+        description: `${errorMessage}`,
       });
     }
   }
@@ -74,11 +77,14 @@ class CompanyMemberService {
       });
       return response.data;
     } catch (error) {
-      console.error("Error during the update process:", error);
+      const errorMessage =
+        error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : "An unexpected error occurred";
       toast({
         variant: "destructive",
         title: "Error",
-        description: `${error}`,
+        description: `${errorMessage}`,
       });
     }
   }
@@ -95,11 +101,14 @@ class CompanyMemberService {
       });
       return response.data;
     } catch (error) {
-      console.error("Error during the delete process:", error);
+      const errorMessage =
+        error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : "An unexpected error occurred";
       toast({
         variant: "destructive",
         title: "Error",
-        description: `${error}`,
+        description: `${errorMessage}`,
       });
     }
   }
