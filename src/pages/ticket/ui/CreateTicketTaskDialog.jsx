@@ -60,7 +60,7 @@ export function CreateTicketTaskDialog({
     end_time: yup.date().nullable(),
     progress: yup
       .number()
-      .nullable()
+      .default(0)
       .min(0, "Progress must be at least 0")
       .max(100, "Progress must be at most 100"),
   });
@@ -254,7 +254,7 @@ export function CreateTicketTaskDialog({
                           min={0}
                           max={100}
                           step={1}
-                          defaultValue={field.value}
+                          value={[0]}
                           onValueChange={field.onChange}
                         />
                         <p className="font-semibold">{field.value}</p>

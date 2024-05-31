@@ -42,6 +42,8 @@ import TicketList from "@/pages/ticket/TicketList";
 import AddTicket from "@/pages/ticket/AddTicket";
 import TicketDetail from "@/pages/ticket/TicketDetail";
 import UpdateTicket from "@/pages/ticket/UpdateTicket";
+import AddTicketCustomer from "@/pages/ticket/AddTicketCustomer";
+import UpdateTicketCustomer from "@/pages/ticket/UpdateTicketCustomer";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -63,6 +65,10 @@ const router = createBrowserRouter(
         <Route path="/customer" element={<CustomerLayout />}>
           <Route index element={<Navigate to="/customer/home" replace />} />
           <Route path="home" element={<HomeCustomer />} />
+          <Route path="ticket" element={<TicketList />} />
+          <Route path="ticket/:id" element={<TicketDetail />} />
+          <Route path="ticket/add" element={<AddTicketCustomer />} />
+          <Route path="ticket/update/:id" element={<UpdateTicketCustomer />} />
           <Route path="ticket-solution" element={<TicketSolutionList />} />
           <Route
             path="ticket-solution/:id"
@@ -82,6 +88,10 @@ const router = createBrowserRouter(
             element={<Navigate to="/company-admin/home" replace />}
           />
           <Route path="home" element={<HomeCompanyAdmin />} />
+          <Route path="ticket" element={<TicketList />} />
+          <Route path="ticket/:id" element={<TicketDetail />} />
+          <Route path="ticket/add" element={<AddTicketCustomer />} />
+          <Route path="ticket/update/:id" element={<UpdateTicketCustomer />} />
           <Route path="ticket-solution" element={<TicketSolutionList />} />
           <Route
             path="ticket-solution/:id"
@@ -102,6 +112,10 @@ const router = createBrowserRouter(
         <Route path="/technician" element={<TechnicianLayout />}>
           <Route index element={<Navigate to="/technician/home" replace />} />
           <Route path="home" element={<HomeTechnician />} />
+          <Route path="ticket" element={<TicketList />} />
+          <Route path="ticket/:id" element={<TicketDetail />} />
+          <Route path="ticket/add" element={<AddTicket />} />
+          <Route path="ticket/update/:id" element={<UpdateTicket />} />
           <Route path="ticket-solution" element={<TicketSolutionList />} />
           <Route
             path="ticket-solution/:id"

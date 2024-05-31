@@ -40,6 +40,7 @@ import TicketTaskTab from "./ui/TicketTaskTab";
 import UpdateStatusButton from "./ui/UpdateStatusButton";
 import AssignTicketButton from "./ui/AssignTicketButton";
 import useAssignment from "@/hooks/assignment/useAssignment";
+import CancelTicketButton from "./ui/CancelTicketButton";
 
 const TicketDetail = () => {
   const { id } = useParams();
@@ -83,35 +84,62 @@ const TicketDetail = () => {
           Ticket Detail
         </h1>
         <div className="ml-auto items-center gap-2 flex">
-          {user.role === UserRoleToEnum.MANAGER &&
+          <AssignTicketButton
+            ticketId={ticket.id}
+            onReload={() => fetchAssignment()}
+            isShow={
+              user.role === UserRoleToEnum.MANAGER &&
+              ticket.status !== TicketStatusToEnum.CLOSED &&
+              ticket.status !== TicketStatusToEnum.CANCELLED
+            }
+          />
+          <CancelTicketButton
+            ticketId={ticket.id}
+            onReload={() => fetchTicket()}
+            isShow={
+              (user.role === UserRoleToEnum.CUSTOMER ||
+                user.role === UserRoleToEnum.COMPANYADMIN) &&
+              ticket.status === TicketStatusToEnum.ASSIGNED
+            }
+          />
+          <UpdateStatusButton
+            ticketId={ticket.id}
+            onReload={() => fetchTicket()}
+            isShow={
+              (user.role === UserRoleToEnum.MANAGER ||
+                user.role === UserRoleToEnum.TECHNICIAN) &&
+              ticket.status !== TicketStatusToEnum.CLOSED &&
+              ticket.status !== TicketStatusToEnum.CANCELLED
+            }
+          />
+
+          {(ticket.status === TicketStatusToEnum.ASSIGNED ||
+            ((user.role === UserRoleToEnum.MANAGER ||
+              user.role === UserRoleToEnum.TECHNICIAN) &&
+              ticket.status !== TicketStatusToEnum.CLOSED &&
+              ticket.status !== TicketStatusToEnum.CANCELLED)) && (
+            <Button
+              type="button"
+              size="sm"
+              className="bg-blue-500 text-white"
+              onClick={() => handleOpenUpdatePage(ticket.id)}
+            >
+              Update
+            </Button>
+          )}
+
+          {(user.role === UserRoleToEnum.MANAGER ||
+            user.role === UserRoleToEnum.TECHNICIAN) &&
             ticket.status !== TicketStatusToEnum.CLOSED &&
             ticket.status !== TicketStatusToEnum.CANCELLED && (
-              <>
-                <UpdateStatusButton
-                  ticketId={ticket.id}
-                  onReload={() => fetchTicket()}
-                />
-                <AssignTicketButton
-                  ticketId={ticket.id}
-                  onReload={() => fetchAssignment()}
-                />
-                <Button
-                  type="button"
-                  size="sm"
-                  className="bg-blue-500 text-white"
-                  onClick={() => handleOpenUpdatePage(ticket.id)}
-                >
-                  Update
-                </Button>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => openDialog(ticket.id)}
-                >
-                  Delete
-                </Button>
-              </>
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                onClick={() => openDialog(ticket.id)}
+              >
+                Delete
+              </Button>
             )}
         </div>
       </div>

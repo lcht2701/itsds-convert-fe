@@ -24,7 +24,7 @@ import {
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-const AssignTicketButton = ({ ticketId, onReload }) => {
+const AssignTicketButton = ({ ticketId, onReload, isShow }) => {
   const { assignment, technicians, loading, fetchTechnicians, addAssignment } =
     useAssignment(ticketId);
   const { dialog, openDialog, closeDialog } = useDialog();
@@ -54,21 +54,23 @@ const AssignTicketButton = ({ ticketId, onReload }) => {
   };
 
   useEffect(() => {
-    if (assignment) {
+    if (assignment && assignment.technician) {
       setValue("technician_id", assignment.technician.id);
     }
   }, [assignment]);
 
   return (
     <>
-      <Button
-        type="button"
-        size="sm"
-        className="bg-gray-400 text-white"
-        onClick={() => handleOpenDialog()}
-      >
-        Assign to a new technician
-      </Button>
+      {isShow && (
+        <Button
+          type="button"
+          size="sm"
+          className="bg-gray-400 text-white"
+          onClick={() => handleOpenDialog()}
+        >
+          Assign to a new technician
+        </Button>
+      )}
       <Dialog
         open={dialog !== null}
         onOpenChange={(isOpen) => (isOpen ? null : closeDialog())}

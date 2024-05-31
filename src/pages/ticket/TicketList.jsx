@@ -44,7 +44,12 @@ const TicketList = () => {
         <Tabs defaultValue="all">
           <ListNavBar
             navigate={navigate}
-            acceptedRoles={[UserRoleToEnum.MANAGER, UserRoleToEnum.TECHNICIAN]}
+            acceptedRoles={[
+              UserRoleToEnum.MANAGER,
+              UserRoleToEnum.TECHNICIAN,
+              UserRoleToEnum.CUSTOMER,
+              UserRoleToEnum.COMPANYADMIN,
+            ]}
           />
           <TabsContent value="all">
             <Card x-chunk="dashboard-06-chunk-0">

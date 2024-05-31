@@ -35,6 +35,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 import {
   ContractStatusToEnum,
   PriorityBadge,
+  TicketStatusToEnum,
   TicketTaskStatusBadge,
   UserRoleToEnum,
 } from "@/utils/EnumObject";
@@ -85,8 +86,10 @@ function TicketTaskTab({ ticket }) {
           <CardTitle>Ticket Tasks</CardTitle>
           <CardDescription>Tasks that belong to the ticket</CardDescription>
         </div>
-        {user.role === UserRoleToEnum.MANAGER &&
-          ticket.status !== ContractStatusToEnum.EXPIRED && (
+        {(user.role === UserRoleToEnum.MANAGER ||
+          user.role === UserRoleToEnum.TECHNICIAN) &&
+          ticket.status !== TicketStatusToEnum.CLOSED &&
+          ticket.status !== TicketStatusToEnum.CANCELLED && (
             <div className="ml-auto items-center">
               <Button
                 type="button"
@@ -129,8 +132,10 @@ function TicketTaskTab({ ticket }) {
                   <TableHead className="hidden md:table-cell">
                     Updated at
                   </TableHead>
-                  {user.role === UserRoleToEnum.MANAGER &&
-                    ticket.status !== ContractStatusToEnum.EXPIRED && (
+                  {(user.role === UserRoleToEnum.MANAGER ||
+                    user.role === UserRoleToEnum.TECHNICIAN) &&
+                    ticket.status !== TicketStatusToEnum.CLOSED &&
+                    ticket.status !== TicketStatusToEnum.CANCELLED && (
                       <TableHead>
                         <span className="sr-only">Actions</span>
                       </TableHead>
@@ -167,8 +172,10 @@ function TicketTaskTab({ ticket }) {
                     <TableCell className="hidden md:table-cell">
                       {task.updated_at}
                     </TableCell>
-                    {user.role === UserRoleToEnum.MANAGER &&
-                      ticket.status !== ContractStatusToEnum.EXPIRED && (
+                    {(user.role === UserRoleToEnum.MANAGER ||
+                      user.role === UserRoleToEnum.TECHNICIAN) &&
+                      ticket.status !== TicketStatusToEnum.CLOSED &&
+                      ticket.status !== TicketStatusToEnum.CANCELLED && (
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>

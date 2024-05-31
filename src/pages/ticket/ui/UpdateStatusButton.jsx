@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import useTicket from "@/hooks/ticket/useTicket";
-import { TicketStatusToEnum } from "@/utils/EnumObject";
+import { TicketStatusToEnum, UserRoleToEnum } from "@/utils/EnumObject";
 import React, { useEffect } from "react";
 import { useState } from "react";
 
-const UpdateStatusButton = ({ ticketId, onReload }) => {
+const UpdateStatusButton = ({ ticketId, onReload, isShow }) => {
   const { ticket, updateTicketStatus } = useTicket(ticketId);
   const [btnName, setBtnName] = useState("");
 
@@ -33,14 +33,18 @@ const UpdateStatusButton = ({ ticketId, onReload }) => {
   };
 
   return (
-    <Button
-      type="button"
-      size="sm"
-      className="bg-gray-400 text-white"
-      onClick={() => handleUpdateStatus()}
-    >
-      {btnName || "Loading..."}
-    </Button>
+    <>
+      {isShow && (
+        <Button
+          type="button"
+          size="sm"
+          className="bg-gray-400 text-white"
+          onClick={() => handleUpdateStatus()}
+        >
+          {btnName || "Loading..."}
+        </Button>
+      )}
+    </>
   );
 };
 

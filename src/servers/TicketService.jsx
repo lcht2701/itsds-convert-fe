@@ -174,7 +174,7 @@ class TicketService {
 
   async cancelTicketByCustomer(id) {
     try {
-      const response = await apiClient.delete(
+      const response = await apiClient.patch(
         `/api/ticket/${id}/customer-cancel`
       );
       console.log("Cancel ticket", response.data);
