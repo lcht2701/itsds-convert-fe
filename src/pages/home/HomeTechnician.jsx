@@ -2,8 +2,12 @@ import { Link } from "react-router-dom";
 import {
   Activity,
   ArrowUpRight,
+  ContactRound,
   CreditCard,
   DollarSign,
+  MonitorStop,
+  ReceiptText,
+  TicketCheck,
   Users,
 } from "lucide-react";
 
@@ -25,56 +29,84 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import useDashboard from "@/hooks/dashboard/useDashboard";
+import { Spinner } from "@/components/ui/spinner";
+import { useEffect } from "react";
+import { useAuth } from "@/contexts/AuthProvider";
+import { TicketStatusBadge } from "@/utils/EnumObject";
+import { RouteByRole } from "@/utils/RouteByRole";
 
 export function HomeTechnician() {
+  const { user } = useAuth();
+  const { data, loading, fetchTechnicianDashboard } = useDashboard();
+  const routeByRole = RouteByRole(user.role);
+
+  useEffect(() => {
+    fetchTechnicianDashboard(user.id);
+  }, []);
+
+  if (loading) return <Spinner size="medium" />;
+
   return (
     <>
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
         <Card x-chunk="dashboard-01-chunk-0">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium">
+              Assigned Tickets
+            </CardTitle>
+            <ReceiptText className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
+            <div className="text-2xl font-bold">
+              {data.current_assigned_tickets}
+            </div>
             <p className="text-xs text-muted-foreground">
-              +20.1% from last month
+              Current progressing: {data.current_progressing_tickets}
             </p>
           </CardContent>
         </Card>
         <Card x-chunk="dashboard-01-chunk-1">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Subscriptions</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium">
+              Total Completed Tickets
+            </CardTitle>
+            <TicketCheck className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+2350</div>
+            <div className="text-2xl font-bold">
+              {data.total_completed_tickets}
+            </div>
             <p className="text-xs text-muted-foreground">
-              +180.1% from last month
+              No. Cancelled Tickets: {data.total_cancel_tickets}
             </p>
           </CardContent>
         </Card>
         <Card x-chunk="dashboard-01-chunk-2">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sales</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium">
+              Newly Assigned
+            </CardTitle>
+            <ContactRound className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+12,234</div>
+            <div className="text-2xl font-bold">{data.new_tickets_month}</div>
             <p className="text-xs text-muted-foreground">
-              +19% from last month
+              {data.new_tickets_month_percentage} from last month
             </p>
           </CardContent>
         </Card>
         <Card x-chunk="dashboard-01-chunk-3">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Now</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-sm font-medium">
+              Ticket Solutions Owned
+            </CardTitle>
+            <MonitorStop className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+573</div>
+            <div className="text-2xl font-bold">{data.num_solutions_owned}</div>
             <p className="text-xs text-muted-foreground">
-              +201 since last hour
+              Today's Interactions: {data.num_actions_today}
             </p>
           </CardContent>
         </Card>
@@ -83,15 +115,13 @@ export function HomeTechnician() {
         <Card className="xl:col-span-2" x-chunk="dashboard-01-chunk-4">
           <CardHeader className="flex flex-row items-center">
             <div className="grid gap-2">
-              <CardTitle>Transactions</CardTitle>
-              <CardDescription>
-                Recent transactions from your store.
-              </CardDescription>
+              <CardTitle>Recent Tickets</CardTitle>
+              <CardDescription>Recent tickets assigned to me</CardDescription>
             </div>
-            <Button asChild size="sm" className="ml-auto gap-1">
-              <Link href="#">
+            <Button asChild size="sm" className="gap-1 ml-auto">
+              <Link to={`${routeByRole}/ticket`}>
                 View All
-                <ArrowUpRight className="h-4 w-4" />
+                <ArrowUpRight className="w-4 h-4" />
               </Link>
             </Button>
           </CardHeader>
@@ -99,186 +129,54 @@ export function HomeTechnician() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Customer</TableHead>
-                  <TableHead className="hidden xl:table-column">Type</TableHead>
-                  <TableHead className="hidden xl:table-column">
-                    Status
-                  </TableHead>
-                  <TableHead className="hidden xl:table-column">Date</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
+                  <TableHead>Ticket</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Last Modified</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <div className="font-medium">Liam Johnson</div>
-                    <div className="hidden text-sm text-muted-foreground md:inline">
-                      liam@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">Sale</TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    <Badge className="text-xs" variant="outline">
-                      Approved
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                    2023-06-23
-                  </TableCell>
-                  <TableCell className="text-right">$250.00</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="font-medium">Olivia Smith</div>
-                    <div className="hidden text-sm text-muted-foreground md:inline">
-                      olivia@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    Refund
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    <Badge className="text-xs" variant="outline">
-                      Declined
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                    2023-06-24
-                  </TableCell>
-                  <TableCell className="text-right">$150.00</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="font-medium">Noah Williams</div>
-                    <div className="hidden text-sm text-muted-foreground md:inline">
-                      noah@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    Subscription
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    <Badge className="text-xs" variant="outline">
-                      Approved
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                    2023-06-25
-                  </TableCell>
-                  <TableCell className="text-right">$350.00</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="font-medium">Emma Brown</div>
-                    <div className="hidden text-sm text-muted-foreground md:inline">
-                      emma@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">Sale</TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    <Badge className="text-xs" variant="outline">
-                      Approved
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                    2023-06-26
-                  </TableCell>
-                  <TableCell className="text-right">$450.00</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="font-medium">Liam Johnson</div>
-                    <div className="hidden text-sm text-muted-foreground md:inline">
-                      liam@example.com
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden xl:table-column">Sale</TableCell>
-                  <TableCell className="hidden xl:table-column">
-                    <Badge className="text-xs" variant="outline">
-                      Approved
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                    2023-06-27
-                  </TableCell>
-                  <TableCell className="text-right">$550.00</TableCell>
-                </TableRow>
+                {data.available_tickets.map((ticket, key) => (
+                  <TableRow key={key}>
+                    <TableCell>
+                      <div className="font-medium">{ticket.title || "-"}</div>
+                      <div className="hidden text-sm text-muted-foreground md:inline">
+                        Requested by: {ticket.requester?.name}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {<TicketStatusBadge status={ticket?.status} />}
+                    </TableCell>
+                    <TableCell>{ticket.updated_at}</TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </CardContent>
         </Card>
         <Card x-chunk="dashboard-01-chunk-5">
           <CardHeader>
-            <CardTitle>Recent Sales</CardTitle>
+            <CardTitle>Recent Completed Ticket</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-8">
-            <div className="flex items-center gap-4">
-              <Avatar className="hidden h-9 w-9 sm:flex">
-                <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                <AvatarFallback>OM</AvatarFallback>
-              </Avatar>
-              <div className="grid gap-1">
-                <p className="text-sm font-medium leading-none">
-                  Olivia Martin
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  olivia.martin@email.com
-                </p>
+            {data.recent_solved_tickets.map((ticket, key) => (
+              <div className="flex items-center gap-4" key={key}>
+                <Avatar className="hidden h-9 w-9 sm:flex">
+                  <AvatarImage src="/avatars/01.png" alt="Avatar" />
+                  <AvatarFallback>
+                    {ticket.title.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="grid gap-1">
+                  <p className="text-sm font-medium leading-none">
+                    {ticket.title}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Completed Time: {ticket.completed_time}
+                  </p>
+                </div>
+                <div className="ml-auto">{ticket.requester?.name}</div>
               </div>
-              <div className="ml-auto font-medium">+$1,999.00</div>
-            </div>
-            <div className="flex items-center gap-4">
-              <Avatar className="hidden h-9 w-9 sm:flex">
-                <AvatarImage src="/avatars/02.png" alt="Avatar" />
-                <AvatarFallback>JL</AvatarFallback>
-              </Avatar>
-              <div className="grid gap-1">
-                <p className="text-sm font-medium leading-none">Jackson Lee</p>
-                <p className="text-sm text-muted-foreground">
-                  jackson.lee@email.com
-                </p>
-              </div>
-              <div className="ml-auto font-medium">+$39.00</div>
-            </div>
-            <div className="flex items-center gap-4">
-              <Avatar className="hidden h-9 w-9 sm:flex">
-                <AvatarImage src="/avatars/03.png" alt="Avatar" />
-                <AvatarFallback>IN</AvatarFallback>
-              </Avatar>
-              <div className="grid gap-1">
-                <p className="text-sm font-medium leading-none">
-                  Isabella Nguyen
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  isabella.nguyen@email.com
-                </p>
-              </div>
-              <div className="ml-auto font-medium">+$299.00</div>
-            </div>
-            <div className="flex items-center gap-4">
-              <Avatar className="hidden h-9 w-9 sm:flex">
-                <AvatarImage src="/avatars/04.png" alt="Avatar" />
-                <AvatarFallback>WK</AvatarFallback>
-              </Avatar>
-              <div className="grid gap-1">
-                <p className="text-sm font-medium leading-none">William Kim</p>
-                <p className="text-sm text-muted-foreground">will@email.com</p>
-              </div>
-              <div className="ml-auto font-medium">+$99.00</div>
-            </div>
-            <div className="flex items-center gap-4">
-              <Avatar className="hidden h-9 w-9 sm:flex">
-                <AvatarImage src="/avatars/05.png" alt="Avatar" />
-                <AvatarFallback>SD</AvatarFallback>
-              </Avatar>
-              <div className="grid gap-1">
-                <p className="text-sm font-medium leading-none">Sofia Davis</p>
-                <p className="text-sm text-muted-foreground">
-                  sofia.davis@email.com
-                </p>
-              </div>
-              <div className="ml-auto font-medium">+$39.00</div>
-            </div>
+            ))}
           </CardContent>
         </Card>
       </div>
