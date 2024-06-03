@@ -32,8 +32,11 @@ import useDashboard from "@/hooks/dashboard/useDashboard";
 import { useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { TicketStatusBadge } from "@/utils/EnumObject";
+import { RouteByRole } from "@/utils/RouteByRole";
+import { useAuth } from "@/contexts/AuthProvider";
 
 export function HomeManager() {
+  const { user } = useAuth();
   const { data, loading, fetchManagerDashboard } = useDashboard();
   const routeByRole = RouteByRole(user.role);
 
