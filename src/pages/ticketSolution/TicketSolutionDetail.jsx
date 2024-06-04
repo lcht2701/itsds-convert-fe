@@ -79,13 +79,13 @@ const TicketSolutionDetail = () => {
           className="h-7 w-7"
           onClick={() => navigate(-1)}
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="w-4 h-4" />
           <span className="sr-only">Back</span>
         </Button>
-        <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
+        <h1 className="flex-1 text-xl font-semibold tracking-tight shrink-0 whitespace-nowrap sm:grow-0">
           Ticket Solution Detail
         </h1>
-        <div className="ml-auto items-center gap-2 flex">
+        <div className="flex items-center gap-2 ml-auto">
           {user.role === UserRoleToEnum.MANAGER && (
             <>
               {ticketSolution.review_date === null ? (
@@ -115,7 +115,7 @@ const TicketSolutionDetail = () => {
               <Button
                 type="button"
                 size="sm"
-                className="bg-blue-500 text-white"
+                className="text-white bg-blue-500"
                 onClick={() => handleOpenUpdatePage(ticketSolution.id)}
               >
                 Update
@@ -136,9 +136,9 @@ const TicketSolutionDetail = () => {
         <Card className="lg:col-span-4 xl:col-span-9">
           <CardHeader className="flex flex-row items-center">
             <div className="flex items-center gap-4">
-              <Avatar className="hidden h-16 w-16 sm:flex">
+              <Avatar className="hidden w-16 h-16 sm:flex">
                 <AvatarFallback className="text-yellow-400">
-                  <Lightbulb className="h-8 w-8" />
+                  <Lightbulb className="w-8 h-8" />
                 </AvatarFallback>
               </Avatar>
               <div className="grid gap-1">
@@ -154,7 +154,7 @@ const TicketSolutionDetail = () => {
           <CardContent className="grid gap-6">
             <div className="grid gap-3">
               <CardTitle className="ml-2">Content</CardTitle>
-              <div className="relative flex h-full flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
+              <div className="relative flex flex-col h-full p-4 rounded-xl bg-muted/50 lg:col-span-2">
                 <Textarea
                   id="content"
                   name="content"
@@ -164,28 +164,28 @@ const TicketSolutionDetail = () => {
                 />
               </div>
             </div>
-            <div className="flex gap-8 h-auto">
+            <div className="flex h-auto gap-8">
               <Label className="flex items-center ml-2">
                 Does this solution helpful
               </Label>
               <div className="flex gap-4 ">
                 <div className="flex gap-2">
                   <ThumbsUp
-                    className="h-6 w-6"
+                    className="w-6 h-6"
                     color={reaction.my_reaction === 1 ? "#3f86d2" : "#000"}
                     onClick={() => likeReaction()}
                   />
-                  <p className="text-sm text-gray-600 font-semibold">
+                  <p className="text-sm font-semibold text-gray-600">
                     {reaction.count_like}
                   </p>
                 </div>
                 <div className="flex gap-2">
                   <ThumbsDown
-                    className="h-6 w-6"
+                    className="w-6 h-6"
                     color={reaction.my_reaction === 0 ? "#ff0000" : "#000"}
                     onClick={() => dislikeReaction()}
                   />
-                  <p className="text-sm text-gray-600 font-semibold">
+                  <p className="text-sm font-semibold text-gray-600">
                     {reaction.count_dislike}
                   </p>
                 </div>

@@ -77,18 +77,19 @@ const TicketDetail = () => {
           className="h-7 w-7"
           onClick={() => navigate(-1)}
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="w-4 h-4" />
           <span className="sr-only">Back</span>
         </Button>
-        <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
+        <h1 className="flex-1 text-xl font-semibold tracking-tight shrink-0 whitespace-nowrap sm:grow-0">
           Ticket Detail
         </h1>
-        <div className="ml-auto items-center gap-2 flex">
+        <div className="flex items-center gap-2 ml-auto">
           <AssignTicketButton
             ticketId={ticket.id}
             onReload={() => fetchAssignment()}
             isShow={
               user.role === UserRoleToEnum.MANAGER &&
+              ticket.status !== TicketStatusToEnum.RESOLVED &&
               ticket.status !== TicketStatusToEnum.CLOSED &&
               ticket.status !== TicketStatusToEnum.CANCELLED
             }
@@ -121,7 +122,7 @@ const TicketDetail = () => {
             <Button
               type="button"
               size="sm"
-              className="bg-blue-500 text-white"
+              className="text-white bg-blue-500"
               onClick={() => handleOpenUpdatePage(ticket.id)}
             >
               Update
@@ -147,9 +148,9 @@ const TicketDetail = () => {
         <Card className="lg:col-span-4 xl:col-span-9">
           <CardHeader className="flex flex-row items-center">
             <div className="flex items-center gap-4">
-              <Avatar className="hidden h-16 w-16 sm:flex">
+              <Avatar className="hidden w-16 h-16 sm:flex">
                 <AvatarFallback className="text-2xl">
-                  <Ticket className="h-8 w-8" />
+                  <Ticket className="w-8 h-8" />
                 </AvatarFallback>
               </Avatar>
               <div className="grid gap-1">
@@ -157,13 +158,13 @@ const TicketDetail = () => {
                   {ticket.title}
                 </p>
                 <div className="text-sm">
-                  <div className="flex gap-2 items-center">
+                  <div className="flex items-center gap-2">
                     <p className="text-muted-foreground">Requester:</p>
                     <span className="italic">{ticket.requester?.name}</span>
                   </div>
                 </div>
                 <div className="text-sm">
-                  <div className="flex gap-2 items-center">
+                  <div className="flex items-center gap-2">
                     <p className="text-muted-foreground">Created at:</p>
                     <span className="italic ">{ticket.created_at}</span>
                   </div>
@@ -177,7 +178,7 @@ const TicketDetail = () => {
                 <TabsTrigger value="detail" className="flex items-center">
                   <p className="flex items-center gap-1 px-6">
                     <span>
-                      <ListTodo className="h-5 w-5" />
+                      <ListTodo className="w-5 h-5" />
                     </span>
                     Detail
                   </p>
@@ -185,7 +186,7 @@ const TicketDetail = () => {
                 <TabsTrigger value="tasks" className="flex items-center">
                   <p className="flex items-center gap-1 px-6">
                     <span>
-                      <ClipboardList className="h-5 w-5" />
+                      <ClipboardList className="w-5 h-5" />
                     </span>
                     Tasks
                   </p>
@@ -236,11 +237,11 @@ const TicketDetail = () => {
             </div>
             <div className="grid gap-6">
               <Separator />
-              <CardTitle className="text-lg flex items-center gap-6">
+              <CardTitle className="flex items-center gap-6 text-lg">
                 <p>Requester Detail</p>
                 <span className="flex items-center gap-2">
-                  <Phone className="h-5 w-5" color="#40A578" />
-                  <MessageCircleMore className="h-5 w-5" color="#285cd7" />
+                  <Phone className="w-5 h-5" color="#40A578" />
+                  <MessageCircleMore className="w-5 h-5" color="#285cd7" />
                 </span>
               </CardTitle>
               <div className="grid grid-cols-2 text-sm font-medium">
