@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
 import {
   Activity,
   ArrowUpRight,
@@ -8,18 +8,18 @@ import {
   ReceiptText,
   Ticket,
   Users,
-} from "lucide-react";
+} from "lucide-react"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
 import {
   Table,
   TableBody,
@@ -27,24 +27,24 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import useDashboard from "@/hooks/dashboard/useDashboard";
-import { useEffect } from "react";
-import { Spinner } from "@/components/ui/spinner";
-import { TicketStatusBadge } from "@/utils/EnumObject";
-import { RouteByRole } from "@/utils/RouteByRole";
-import { useAuth } from "@/contexts/AuthProvider";
+} from "@/components/ui/table"
+import useDashboard from "@/hooks/dashboard/useDashboard"
+import { useEffect } from "react"
+import { Spinner } from "@/components/ui/spinner"
+import { TicketStatusBadge } from "@/utils/EnumObject"
+import { RouteByRole } from "@/utils/RouteByRole"
+import { useAuth } from "@/contexts/AuthProvider"
 
 export function HomeManager() {
-  const { user } = useAuth();
-  const { data, loading, fetchManagerDashboard } = useDashboard();
-  const routeByRole = RouteByRole(user.role);
+  const { user } = useAuth()
+  const { data, loading, fetchManagerDashboard } = useDashboard()
+  const routeByRole = RouteByRole(user.role)
 
   useEffect(() => {
-    fetchManagerDashboard();
-  }, []);
+    fetchManagerDashboard()
+  }, [])
 
-  if (loading) return <Spinner size="medium" />;
+  if (loading) return <Spinner size="medium" />
 
   return (
     <>
@@ -56,10 +56,10 @@ export function HomeManager() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {data.new_tickets_current_month}
+              {data.new_tickets_current_month | "-"}
             </div>
             <p className="text-xs text-muted-foreground">
-              {data.new_tickets_percentage} from last month
+              {data.new_tickets_percentage | "-"} from last month
             </p>
           </CardContent>
         </Card>
@@ -72,10 +72,10 @@ export function HomeManager() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {data.new_solutions_current_month}
+              {data.new_solutions_current_month | "-"}
             </div>
             <p className="text-xs text-muted-foreground">
-              {data.new_solutions_percentage} from last month
+              {data.new_solutions_percentage | "-"} from last month
             </p>
           </CardContent>
         </Card>
@@ -86,10 +86,10 @@ export function HomeManager() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {data.new_contracts_current_month}
+              {data.new_contracts_current_month | "-"}
             </div>
             <p className="text-xs text-muted-foreground">
-              {data.new_contracts_percentage} from last month
+              {data.new_contracts_percentage | "-"} from last month
             </p>
           </CardContent>
         </Card>
@@ -100,10 +100,10 @@ export function HomeManager() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {data.new_active_users_current_month}
+              {data.new_active_users_current_month | "-"}
             </div>
             <p className="text-xs text-muted-foreground">
-              {data.new_active_users_percentage} since last month
+              {data.new_active_users_percentage | "-"} since last month
             </p>
           </CardContent>
         </Card>
@@ -174,5 +174,5 @@ export function HomeManager() {
         </Card>
       </div>
     </>
-  );
+  )
 }

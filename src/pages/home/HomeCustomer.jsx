@@ -1,15 +1,14 @@
-import { Link } from "react-router-dom";
-import { ArrowUpRight, CreditCard, DollarSign, Users } from "lucide-react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom"
+import { ArrowUpRight, CreditCard, DollarSign, Users } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
 import {
   Table,
   TableBody,
@@ -17,24 +16,24 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useAuth } from "@/contexts/AuthProvider";
-import useDashboard from "@/hooks/dashboard/useDashboard";
-import { useEffect } from "react";
-import { Spinner } from "@/components/ui/spinner";
-import { TicketStatusBadge } from "@/utils/EnumObject";
-import { RouteByRole } from "@/utils/RouteByRole";
+} from "@/components/ui/table"
+import { useAuth } from "@/contexts/AuthProvider"
+import useDashboard from "@/hooks/dashboard/useDashboard"
+import { useEffect } from "react"
+import { Spinner } from "@/components/ui/spinner"
+import { TicketStatusBadge } from "@/utils/EnumObject"
+import { RouteByRole } from "@/utils/RouteByRole"
 
 export function HomeCustomer() {
-  const { user } = useAuth();
-  const { data, loading, fetchCustomerDashboard } = useDashboard();
-  const routeByRole = RouteByRole(user.role);
+  const { user } = useAuth()
+  const { data, loading, fetchCustomerDashboard } = useDashboard()
+  const routeByRole = RouteByRole(user.role)
 
   useEffect(() => {
-    fetchCustomerDashboard(user.id);
-  }, []);
+    fetchCustomerDashboard(user.id)
+  }, [])
 
-  if (loading) return <Spinner size="medium" />;
+  if (loading) return <Spinner size="medium" />
   return (
     <>
       <div className="grid gap-8 lg:grid-cols-3">
@@ -44,9 +43,11 @@ export function HomeCustomer() {
             <DollarSign className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.num_new_tickets}</div>
+            <div className="text-2xl font-bold">
+              {data.num_new_tickets | "-"}
+            </div>
             <p className="text-xs text-muted-foreground">
-              Current progressing: {data.num_progressing_tickets}
+              Current progressing: {data.num_progressing_tickets | "-"}
             </p>
           </CardContent>
         </Card>
@@ -59,10 +60,10 @@ export function HomeCustomer() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {data.total_completed_tickets}
+              {data.total_completed_tickets | "-"}
             </div>
             <p className="text-xs text-muted-foreground">
-              Cancelled Ticket: {data.total_cancel_tickets}
+              Cancelled Ticket: {data.total_cancel_tickets | "-"}
             </p>
           </CardContent>
         </Card>
@@ -74,9 +75,11 @@ export function HomeCustomer() {
             <CreditCard className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{data.count_tickets_month}</div>
+            <div className="text-2xl font-bold">
+              {data.count_tickets_month | "-"}
+            </div>
             <p className="text-xs text-muted-foreground">
-              {data.count_tickets_month_percentage} from last month
+              {data.count_tickets_month_percentage | "-"} from last month
             </p>
           </CardContent>
         </Card>
@@ -151,5 +154,5 @@ export function HomeCustomer() {
         </Card>
       </div>
     </>
-  );
+  )
 }
